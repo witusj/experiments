@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Experiments - 2&nbsp; XGBoost model for pairwise ranking</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./intro.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./xgboost-pairwise-ranking.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">XGBoost model for pairwise ranking</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Experiments</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./xgboost-pairwise-ranking.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">XGBoost model for pairwise ranking</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#objective" id="toc-objective" class="nav-link active" data-scroll-target="#objective"><span class="header-section-number">2.1</span> Objective</a></li>
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background"><span class="header-section-number">2.2</span> Background</a></li>
+  <li><a href="#hypothesis" id="toc-hypothesis" class="nav-link" data-scroll-target="#hypothesis"><span class="header-section-number">2.3</span> Hypothesis</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology"><span class="header-section-number">2.4</span> Methodology</a>
+  <ul class="collapse">
+  <li><a href="#tools-and-materials" id="toc-tools-and-materials" class="nav-link" data-scroll-target="#tools-and-materials"><span class="header-section-number">2.4.1</span> Tools and Materials</a></li>
+  <li><a href="#experimental-design" id="toc-experimental-design" class="nav-link" data-scroll-target="#experimental-design"><span class="header-section-number">2.4.2</span> Experimental Design</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables"><span class="header-section-number">2.4.3</span> Variables</a></li>
+  <li><a href="#data-collection" id="toc-data-collection" class="nav-link" data-scroll-target="#data-collection"><span class="header-section-number">2.4.4</span> Data Collection</a></li>
+  <li><a href="#sample-size-and-selection" id="toc-sample-size-and-selection" class="nav-link" data-scroll-target="#sample-size-and-selection"><span class="header-section-number">2.4.5</span> Sample Size and Selection</a></li>
+  <li><a href="#experimental-procedure" id="toc-experimental-procedure" class="nav-link" data-scroll-target="#experimental-procedure"><span class="header-section-number">2.4.6</span> Experimental Procedure</a></li>
+  </ul></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis"><span class="header-section-number">2.5</span> Analysis</a>
+  <ul class="collapse">
+  <li><a href="#data-processing" id="toc-data-processing" class="nav-link" data-scroll-target="#data-processing"><span class="header-section-number">2.5.1</span> Data Processing</a></li>
+  <li><a href="#statistical-tests" id="toc-statistical-tests" class="nav-link" data-scroll-target="#statistical-tests"><span class="header-section-number">2.5.2</span> Statistical Tests</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">2.6</span> Results</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">2.7</span> Discussion</a></li>
+  <li><a href="#timeline" id="toc-timeline" class="nav-link" data-scroll-target="#timeline"><span class="header-section-number">2.8</span> Timeline</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">2.9</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">XGBoost model for pairwise ranking</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Certainly! Below is a template for a protocol of an experiment in operations research formatted in Markdown.</p>
+<hr>
+<section id="objective" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="objective"><span class="header-section-number">2.1</span> Objective</h2>
+<p><strong>Objective</strong>: <em>Testing the performance of an XGBoost model trained for ranking pairwise schedules.</em></p>
+</section>
+<section id="background" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="background"><span class="header-section-number">2.2</span> Background</h2>
+<p><strong>Background Information</strong>: <em>To find optimal solutions for appointment scheduling problems one approach is to create local search neighborhoods and evaluate each schedule. A better search method either (1) - creates smaller search neighborhoods or (2) - evaluates faster. In this experiment we develop an Machine Learning model using XGBoost that can evaluate two neighboring schedules and rank them according to preference.</em></p>
+</section>
+<section id="hypothesis" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="hypothesis"><span class="header-section-number">2.3</span> Hypothesis</h2>
+<p><strong>Hypothesis</strong>: <em>An XGBoost ranking model outperforms simple enumeration of each element of the pair.</em></p>
+</section>
+<section id="methodology" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="methodology"><span class="header-section-number">2.4</span> Methodology</h2>
+<section id="tools-and-materials" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="tools-and-materials"><span class="header-section-number">2.4.1</span> Tools and Materials</h3>
+<p><strong>Tools and Materials</strong>: <em>List all tools, software, and materials needed for the experiment.</em></p>
+<div id="898886d2" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split, cross_val_score, StratifiedKFold, GridSearchCV</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.base <span class="im">import</span> clone</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="experimental-design" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="experimental-design"><span class="header-section-number">2.4.2</span> Experimental Design</h3>
+<p><strong>Design</strong>: <em>We will create a random set of pairs of neighboring schedules with</em> <span class="math inline">\(N = 12\)</span> patients and <span class="math inline">\(\ T = 18\)</span> intervals of length <span class="math inline">\(d = 5\)</span>.</p>
+<p><em>A neighborhood consists of all schedules that differ by one patient only. Eg: ([2,1,1], [1,1,2]) are neighbors and ([2,1,1], [1,0,3]) are not.</em></p>
+<p>*Service times will have a discrete. The probability of a scheduled patient not showing up will be <span class="math inline">\(q = 0.20\)</span>.</p>
+<div id="c6b5931b" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="dv">18</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.27</span>, <span class="fl">0.28</span>, <span class="fl">0.2</span>, <span class="fl">0.15</span>, <span class="fl">0.1</span>]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> <span class="fl">0.20</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="variables" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="variables"><span class="header-section-number">2.4.3</span> Variables</h3>
+<ul>
+<li><strong>Independent Variables</strong>: <em>A list of tuples with pairs of neighboring schedules.</em></li>
+<li><strong>Dependent Variables</strong>: <em>A list with rankings for each tuple of pairwise schedules. Eg: If the rank for ([2,1,1], [1,1,2]) is 1 this means that the schedule with index 1 ([1,1,2]) has the lowest objective value.</em></li>
+</ul>
+</section>
+<section id="data-collection" class="level3" data-number="2.4.4">
+<h3 data-number="2.4.4" class="anchored" data-anchor-id="data-collection"><span class="header-section-number">2.4.4</span> Data Collection</h3>
+<p><strong>Data Collection Method</strong>: <em>The data set will be generated using simulation in which random samples will be drawn from the population of all possible schedules. For each sample a random neighboring schedule will be created.</em></p>
+</section>
+<section id="sample-size-and-selection" class="level3" data-number="2.4.5">
+<h3 data-number="2.4.5" class="anchored" data-anchor-id="sample-size-and-selection"><span class="header-section-number">2.4.5</span> Sample Size and Selection</h3>
+<p><strong>Sample Size</strong>: <em>The total population size equals <span class="math inline">\({{N + T -1}\choose{N}} \approx 52\ mln\)</span>. The size of the training and test sets will be varied to explore the effect on model performance.</em></p>
+<p><strong>Sample Selection</strong>: <em>The samples will be drawn from a lexicographic order of possible schedules in order to accurately reflect the combinatorial nature of the problem and to ensure unbiased sampling from the entire combinatorial space.</em></p>
+</section>
+<section id="experimental-procedure" class="level3" data-number="2.4.6">
+<h3 data-number="2.4.6" class="anchored" data-anchor-id="experimental-procedure"><span class="header-section-number">2.4.6</span> Experimental Procedure</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A["Create features"]:::path --&gt;|"option 1"| B["from population"]
+    A --&gt;|"option 2"| C["random subset"]:::path
+    B --&gt; D["Create pairs"]:::path
+    C --&gt; D
+    D --&gt;|"option 1"| E["random"]
+    D --&gt;|"option 2"| F["neighbors"]:::path
+    E --&gt; G["Create labels"]:::path
+    F --&gt; G
+    G --&gt;|"option 1"| H["objective"]
+    G --&gt;|"option 2"| I["ranking"]:::path
+    H --&gt; J["Split dataset"]:::path
+    I --&gt; J
+    J --&gt; K["Train XGBoost"]:::path
+    K --&gt; L["Evaluate model"]:::path
+    
+    classDef path stroke:#f00
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Step 1</strong>: <em>Randomly select a subset of schedules.</em></p>
+<div id="8cc1e32b" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functions <span class="im">import</span> random_combination_with_replacement</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>num_schedules <span class="op">=</span> <span class="dv">20000</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>schedules <span class="op">=</span> random_combination_with_replacement(T, N, num_schedules)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> schedule <span class="kw">in</span> schedules[:<span class="dv">5</span>]:</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Schedule: </span><span class="sc">{</span>schedule<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total number of combinations: 51895935
+Schedule: [6, 2, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0]
+Schedule: [5, 2, 3, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+Schedule: [5, 6, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Schedule: [7, 2, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Schedule: [5, 2, 1, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</code></pre>
+</div>
+</div>
+<p><strong>Step 2</strong>: <em>Create pairs of neighboring schedules.</em></p>
+<div id="8ba67464" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functions <span class="im">import</span> create_neighbors_list</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>neighbors <span class="op">=</span> create_neighbors_list(schedules)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> neighbor <span class="kw">in</span> neighbors[:<span class="dv">5</span>]:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Neighbor: </span><span class="sc">{</span>neighbor[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbor: [6, 2, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0]
+Neighbor: [5, 2, 3, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0]
+Neighbor: [5, 6, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Neighbor: [7, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Neighbor: [5, 2, 1, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]</code></pre>
+</div>
+</div>
+<p><strong>Step 3</strong>: <em>For each schedule in each pair calculate the objective. For each pair save the index of the schedule that has the lowest objective value.</em></p>
+<div id="f0fd6d97" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functions <span class="im">import</span> calculate_objective</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>objectives <span class="op">=</span> [[calculate_objective(neighbor[<span class="dv">0</span>], s, d, q), calculate_objective(neighbor[<span class="dv">1</span>], s, d, q)] <span class="cf">for</span> neighbor <span class="kw">in</span> neighbors]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>rankings <span class="op">=</span> [<span class="dv">0</span> <span class="cf">if</span> obj[<span class="dv">0</span>] <span class="op">&lt;</span> obj[<span class="dv">1</span>] <span class="cf">else</span> <span class="dv">1</span> <span class="cf">for</span> obj <span class="kw">in</span> objectives]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Objectives: </span><span class="sc">{</span>objectives[i]<span class="sc">}</span><span class="ss">, Ranking: </span><span class="sc">{</span>rankings[i]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Objectives: [46.770431244218386, 53.202917435127475], Ranking: 0
+Objectives: [57.869940438864106, 52.16874250971341], Ranking: 1
+Objectives: [81.93609100388147, 89.24223032411952], Ranking: 0
+Objectives: [81.45210346194925, 93.75595263062714], Ranking: 0
+Objectives: [42.75077195837623, 39.65741365840285], Ranking: 1</code></pre>
+</div>
+</div>
+<p><strong>Step 4</strong>: <em>Create training and test sets.</em></p>
+<div id="7280fe01" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the dataset</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> []</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> neighbor <span class="kw">in</span> neighbors:</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    X.append(neighbor[<span class="dv">0</span>] <span class="op">+</span> neighbor[<span class="dv">1</span>])</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array(X)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array(rankings)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the dataset into training and test sets</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Step 5</strong>: <em>Train the XGBoost model.</em></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Start] --&gt; B[Initialize StratifiedKFold]
+    B --&gt; C[Initialize XGBClassifier]
+    C --&gt; D[Set results as empty list]
+    D --&gt; E[Loop through each split of cv split]
+    E --&gt; F[Get train and test indices]
+    F --&gt; G[Split X and y into X_train, X_test, y_train, y_test]
+    G --&gt; H[Clone the classifier]
+    H --&gt; I[Call fit_and_score function]
+    I --&gt; J[Fit the estimator]
+    J --&gt; K[Score on training set]
+    J --&gt; L[Score on test set]
+    K --&gt; M[Return estimator, train_score, test_score]
+    L --&gt; M
+    M --&gt; N[Append the results]
+    N --&gt; E
+    E --&gt; O[Loop ends]
+    O --&gt; P[Print results]
+    P --&gt; Q[End]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div id="2dffec12" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit_and_score(estimator, X_train, X_test, y_train, y_test):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Fit the estimator on the train set and score it on both sets"""</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    estimator.fit(X_train, y_train, eval_set<span class="op">=</span>[(X_test, y_test)])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    train_score <span class="op">=</span> estimator.score(X_train, y_train)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    test_score <span class="op">=</span> estimator.score(X_test, y_test)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> estimator, train_score, test_score</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> StratifiedKFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">94</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the XGBClassifier without early stopping here</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> xgb.XGBClassifier(</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    tree_method<span class="op">=</span><span class="st">"hist"</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    min_child_weight<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    gamma<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    subsample<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    colsample_bytree<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    early_stopping_rounds<span class="op">=</span><span class="dv">10</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> train_idx, test_idx <span class="kw">in</span> cv.split(X, y):</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    X_train, X_test <span class="op">=</span> X[train_idx], X[test_idx]</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    y_train, y_test <span class="op">=</span> y[train_idx], y[test_idx]</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    est, train_score, test_score <span class="op">=</span> fit_and_score(</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>        clone(clf), X_train, X_test, y_train, y_test</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    results.append((est, train_score, test_score))</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Print results</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (est, train_score, test_score) <span class="kw">in</span> <span class="bu">enumerate</span>(results):</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fold </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> - Train Score: </span><span class="sc">{</span>train_score<span class="sc">:.4f}</span><span class="ss">, Test Score: </span><span class="sc">{</span>test_score<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0] validation_0-logloss:0.52667
+[1] validation_0-logloss:0.51462
+[2] validation_0-logloss:0.50505
+[3] validation_0-logloss:0.49403
+[4] validation_0-logloss:0.47719
+[5] validation_0-logloss:0.46819
+[6] validation_0-logloss:0.45934
+[7] validation_0-logloss:0.45169
+[8] validation_0-logloss:0.44502
+[9] validation_0-logloss:0.43790
+[10]    validation_0-logloss:0.43233
+[11]    validation_0-logloss:0.42658
+[12]    validation_0-logloss:0.41747
+[13]    validation_0-logloss:0.41269
+[14]    validation_0-logloss:0.40777
+[15]    validation_0-logloss:0.40295
+[16]    validation_0-logloss:0.39807
+[17]    validation_0-logloss:0.39299
+[18]    validation_0-logloss:0.38887
+[19]    validation_0-logloss:0.38154
+[20]    validation_0-logloss:0.37742
+[21]    validation_0-logloss:0.37333
+[22]    validation_0-logloss:0.36980
+[23]    validation_0-logloss:0.36569
+[24]    validation_0-logloss:0.36179
+[25]    validation_0-logloss:0.35918
+[26]    validation_0-logloss:0.35602
+[27]    validation_0-logloss:0.35187
+[28]    validation_0-logloss:0.34834
+[29]    validation_0-logloss:0.34460
+[30]    validation_0-logloss:0.34124
+[31]    validation_0-logloss:0.33846
+[32]    validation_0-logloss:0.33569
+[33]    validation_0-logloss:0.33143
+[34]    validation_0-logloss:0.32858
+[35]    validation_0-logloss:0.32635
+[36]    validation_0-logloss:0.32196
+[37]    validation_0-logloss:0.31926
+[38]    validation_0-logloss:0.31704
+[39]    validation_0-logloss:0.31335
+[40]    validation_0-logloss:0.31197
+[41]    validation_0-logloss:0.30940
+[42]    validation_0-logloss:0.30675
+[43]    validation_0-logloss:0.30467
+[44]    validation_0-logloss:0.29993
+[45]    validation_0-logloss:0.29576
+[46]    validation_0-logloss:0.29352
+[47]    validation_0-logloss:0.29044
+[48]    validation_0-logloss:0.28854
+[49]    validation_0-logloss:0.28440
+[50]    validation_0-logloss:0.28129
+[51]    validation_0-logloss:0.27803
+[52]    validation_0-logloss:0.27645
+[53]    validation_0-logloss:0.27438
+[54]    validation_0-logloss:0.27142
+[55]    validation_0-logloss:0.26970
+[56]    validation_0-logloss:0.26762
+[57]    validation_0-logloss:0.26627
+[58]    validation_0-logloss:0.26509
+[59]    validation_0-logloss:0.26308
+[60]    validation_0-logloss:0.25970
+[61]    validation_0-logloss:0.25787
+[62]    validation_0-logloss:0.25591
+[63]    validation_0-logloss:0.25489
+[64]    validation_0-logloss:0.25222
+[65]    validation_0-logloss:0.25028
+[66]    validation_0-logloss:0.24868
+[67]    validation_0-logloss:0.24757
+[68]    validation_0-logloss:0.24448
+[69]    validation_0-logloss:0.24271
+[70]    validation_0-logloss:0.24117
+[71]    validation_0-logloss:0.24011
+[72]    validation_0-logloss:0.23773
+[73]    validation_0-logloss:0.23515
+[74]    validation_0-logloss:0.23367
+[75]    validation_0-logloss:0.23240
+[76]    validation_0-logloss:0.23169
+[77]    validation_0-logloss:0.22868
+[78]    validation_0-logloss:0.22791
+[79]    validation_0-logloss:0.22660
+[80]    validation_0-logloss:0.22425
+[81]    validation_0-logloss:0.22333
+[82]    validation_0-logloss:0.22219
+[83]    validation_0-logloss:0.22088
+[84]    validation_0-logloss:0.21910
+[85]    validation_0-logloss:0.21769
+[86]    validation_0-logloss:0.21624
+[87]    validation_0-logloss:0.21516
+[88]    validation_0-logloss:0.21412
+[89]    validation_0-logloss:0.21270
+[90]    validation_0-logloss:0.21164
+[91]    validation_0-logloss:0.21081
+[92]    validation_0-logloss:0.20994
+[93]    validation_0-logloss:0.20707
+[94]    validation_0-logloss:0.20556
+[95]    validation_0-logloss:0.20440
+[96]    validation_0-logloss:0.20197
+[97]    validation_0-logloss:0.20109
+[98]    validation_0-logloss:0.20029
+[99]    validation_0-logloss:0.19910
+[0] validation_0-logloss:0.52647
+[1] validation_0-logloss:0.51620
+[2] validation_0-logloss:0.50538
+[3] validation_0-logloss:0.48894
+[4] validation_0-logloss:0.48029
+[5] validation_0-logloss:0.47141
+[6] validation_0-logloss:0.46397
+[7] validation_0-logloss:0.45627
+[8] validation_0-logloss:0.44858
+[9] validation_0-logloss:0.44175
+[10]    validation_0-logloss:0.43581
+[11]    validation_0-logloss:0.43018
+[12]    validation_0-logloss:0.41914
+[13]    validation_0-logloss:0.41416
+[14]    validation_0-logloss:0.40876
+[15]    validation_0-logloss:0.40372
+[16]    validation_0-logloss:0.39834
+[17]    validation_0-logloss:0.39402
+[18]    validation_0-logloss:0.38945
+[19]    validation_0-logloss:0.38563
+[20]    validation_0-logloss:0.37858
+[21]    validation_0-logloss:0.37444
+[22]    validation_0-logloss:0.36732
+[23]    validation_0-logloss:0.36258
+[24]    validation_0-logloss:0.35924
+[25]    validation_0-logloss:0.35563
+[26]    validation_0-logloss:0.35247
+[27]    validation_0-logloss:0.34841
+[28]    validation_0-logloss:0.34456
+[29]    validation_0-logloss:0.34082
+[30]    validation_0-logloss:0.33775
+[31]    validation_0-logloss:0.33484
+[32]    validation_0-logloss:0.33232
+[33]    validation_0-logloss:0.32895
+[34]    validation_0-logloss:0.32568
+[35]    validation_0-logloss:0.32322
+[36]    validation_0-logloss:0.32036
+[37]    validation_0-logloss:0.31747
+[38]    validation_0-logloss:0.31523
+[39]    validation_0-logloss:0.31219
+[40]    validation_0-logloss:0.30878
+[41]    validation_0-logloss:0.30642
+[42]    validation_0-logloss:0.30419
+[43]    validation_0-logloss:0.30191
+[44]    validation_0-logloss:0.30012
+[45]    validation_0-logloss:0.29384
+[46]    validation_0-logloss:0.29204
+[47]    validation_0-logloss:0.29005
+[48]    validation_0-logloss:0.28438
+[49]    validation_0-logloss:0.28254
+[50]    validation_0-logloss:0.28029
+[51]    validation_0-logloss:0.27828
+[52]    validation_0-logloss:0.27585
+[53]    validation_0-logloss:0.27382
+[54]    validation_0-logloss:0.27166
+[55]    validation_0-logloss:0.26952
+[56]    validation_0-logloss:0.26741
+[57]    validation_0-logloss:0.26573
+[58]    validation_0-logloss:0.26175
+[59]    validation_0-logloss:0.26020
+[60]    validation_0-logloss:0.25823
+[61]    validation_0-logloss:0.25684
+[62]    validation_0-logloss:0.25424
+[63]    validation_0-logloss:0.25264
+[64]    validation_0-logloss:0.24998
+[65]    validation_0-logloss:0.24882
+[66]    validation_0-logloss:0.24747
+[67]    validation_0-logloss:0.24514
+[68]    validation_0-logloss:0.24361
+[69]    validation_0-logloss:0.24217
+[70]    validation_0-logloss:0.24055
+[71]    validation_0-logloss:0.23928
+[72]    validation_0-logloss:0.23734
+[73]    validation_0-logloss:0.23487
+[74]    validation_0-logloss:0.23305
+[75]    validation_0-logloss:0.23091
+[76]    validation_0-logloss:0.22970
+[77]    validation_0-logloss:0.22793
+[78]    validation_0-logloss:0.22714
+[79]    validation_0-logloss:0.22578
+[80]    validation_0-logloss:0.22450
+[81]    validation_0-logloss:0.22371
+[82]    validation_0-logloss:0.22281
+[83]    validation_0-logloss:0.22140
+[84]    validation_0-logloss:0.22026
+[85]    validation_0-logloss:0.21852
+[86]    validation_0-logloss:0.21749
+[87]    validation_0-logloss:0.21581
+[88]    validation_0-logloss:0.21426
+[89]    validation_0-logloss:0.21280
+[90]    validation_0-logloss:0.21134
+[91]    validation_0-logloss:0.21034
+[92]    validation_0-logloss:0.20822
+[93]    validation_0-logloss:0.20624
+[94]    validation_0-logloss:0.20419
+[95]    validation_0-logloss:0.20337
+[96]    validation_0-logloss:0.20221
+[97]    validation_0-logloss:0.20093
+[98]    validation_0-logloss:0.19999
+[99]    validation_0-logloss:0.19902
+[0] validation_0-logloss:0.52661
+[1] validation_0-logloss:0.51614
+[2] validation_0-logloss:0.50641
+[3] validation_0-logloss:0.48666
+[4] validation_0-logloss:0.47627
+[5] validation_0-logloss:0.46799
+[6] validation_0-logloss:0.45951
+[7] validation_0-logloss:0.45150
+[8] validation_0-logloss:0.43939
+[9] validation_0-logloss:0.42978
+[10]    validation_0-logloss:0.42436
+[11]    validation_0-logloss:0.41881
+[12]    validation_0-logloss:0.40987
+[13]    validation_0-logloss:0.40460
+[14]    validation_0-logloss:0.39954
+[15]    validation_0-logloss:0.39581
+[16]    validation_0-logloss:0.38952
+[17]    validation_0-logloss:0.38467
+[18]    validation_0-logloss:0.38019
+[19]    validation_0-logloss:0.37550
+[20]    validation_0-logloss:0.37111
+[21]    validation_0-logloss:0.36790
+[22]    validation_0-logloss:0.36443
+[23]    validation_0-logloss:0.36045
+[24]    validation_0-logloss:0.35667
+[25]    validation_0-logloss:0.35243
+[26]    validation_0-logloss:0.34886
+[27]    validation_0-logloss:0.34464
+[28]    validation_0-logloss:0.34208
+[29]    validation_0-logloss:0.33904
+[30]    validation_0-logloss:0.33517
+[31]    validation_0-logloss:0.33191
+[32]    validation_0-logloss:0.32875
+[33]    validation_0-logloss:0.32590
+[34]    validation_0-logloss:0.32329
+[35]    validation_0-logloss:0.32089
+[36]    validation_0-logloss:0.31885
+[37]    validation_0-logloss:0.31652
+[38]    validation_0-logloss:0.31352
+[39]    validation_0-logloss:0.31104
+[40]    validation_0-logloss:0.30817
+[41]    validation_0-logloss:0.30617
+[42]    validation_0-logloss:0.30216
+[43]    validation_0-logloss:0.29897
+[44]    validation_0-logloss:0.29532
+[45]    validation_0-logloss:0.29325
+[46]    validation_0-logloss:0.29055
+[47]    validation_0-logloss:0.28787
+[48]    validation_0-logloss:0.28514
+[49]    validation_0-logloss:0.28286
+[50]    validation_0-logloss:0.28128
+[51]    validation_0-logloss:0.27899
+[52]    validation_0-logloss:0.27544
+[53]    validation_0-logloss:0.27384
+[54]    validation_0-logloss:0.27274
+[55]    validation_0-logloss:0.27165
+[56]    validation_0-logloss:0.26943
+[57]    validation_0-logloss:0.26723
+[58]    validation_0-logloss:0.26532
+[59]    validation_0-logloss:0.26322
+[60]    validation_0-logloss:0.26104
+[61]    validation_0-logloss:0.25930
+[62]    validation_0-logloss:0.25738
+[63]    validation_0-logloss:0.25641
+[64]    validation_0-logloss:0.25479
+[65]    validation_0-logloss:0.25307
+[66]    validation_0-logloss:0.25181
+[67]    validation_0-logloss:0.25077
+[68]    validation_0-logloss:0.24949
+[69]    validation_0-logloss:0.24790
+[70]    validation_0-logloss:0.24637
+[71]    validation_0-logloss:0.24392
+[72]    validation_0-logloss:0.24213
+[73]    validation_0-logloss:0.24065
+[74]    validation_0-logloss:0.23964
+[75]    validation_0-logloss:0.23766
+[76]    validation_0-logloss:0.23403
+[77]    validation_0-logloss:0.23246
+[78]    validation_0-logloss:0.23038
+[79]    validation_0-logloss:0.22885
+[80]    validation_0-logloss:0.22773
+[81]    validation_0-logloss:0.22659
+[82]    validation_0-logloss:0.22508
+[83]    validation_0-logloss:0.22393
+[84]    validation_0-logloss:0.22260
+[85]    validation_0-logloss:0.22164
+[86]    validation_0-logloss:0.22043
+[87]    validation_0-logloss:0.21973
+[88]    validation_0-logloss:0.21881
+[89]    validation_0-logloss:0.21707
+[90]    validation_0-logloss:0.21537
+[91]    validation_0-logloss:0.21418
+[92]    validation_0-logloss:0.21260
+[93]    validation_0-logloss:0.21147
+[94]    validation_0-logloss:0.21050
+[95]    validation_0-logloss:0.20898
+[96]    validation_0-logloss:0.20740
+[97]    validation_0-logloss:0.20641
+[98]    validation_0-logloss:0.20468
+[99]    validation_0-logloss:0.20404
+[0] validation_0-logloss:0.52644
+[1] validation_0-logloss:0.51427
+[2] validation_0-logloss:0.50417
+[3] validation_0-logloss:0.48675
+[4] validation_0-logloss:0.47862
+[5] validation_0-logloss:0.47014
+[6] validation_0-logloss:0.45705
+[7] validation_0-logloss:0.45073
+[8] validation_0-logloss:0.44445
+[9] validation_0-logloss:0.43322
+[10]    validation_0-logloss:0.42622
+[11]    validation_0-logloss:0.42041
+[12]    validation_0-logloss:0.41393
+[13]    validation_0-logloss:0.40885
+[14]    validation_0-logloss:0.40369
+[15]    validation_0-logloss:0.39684
+[16]    validation_0-logloss:0.39227
+[17]    validation_0-logloss:0.38842
+[18]    validation_0-logloss:0.38250
+[19]    validation_0-logloss:0.37723
+[20]    validation_0-logloss:0.37115
+[21]    validation_0-logloss:0.36631
+[22]    validation_0-logloss:0.36270
+[23]    validation_0-logloss:0.35895
+[24]    validation_0-logloss:0.35522
+[25]    validation_0-logloss:0.35182
+[26]    validation_0-logloss:0.34879
+[27]    validation_0-logloss:0.34460
+[28]    validation_0-logloss:0.34081
+[29]    validation_0-logloss:0.33681
+[30]    validation_0-logloss:0.33415
+[31]    validation_0-logloss:0.33062
+[32]    validation_0-logloss:0.32617
+[33]    validation_0-logloss:0.32350
+[34]    validation_0-logloss:0.32081
+[35]    validation_0-logloss:0.31722
+[36]    validation_0-logloss:0.31504
+[37]    validation_0-logloss:0.31026
+[38]    validation_0-logloss:0.30834
+[39]    validation_0-logloss:0.30525
+[40]    validation_0-logloss:0.30298
+[41]    validation_0-logloss:0.30146
+[42]    validation_0-logloss:0.29949
+[43]    validation_0-logloss:0.29668
+[44]    validation_0-logloss:0.29437
+[45]    validation_0-logloss:0.28950
+[46]    validation_0-logloss:0.28678
+[47]    validation_0-logloss:0.28469
+[48]    validation_0-logloss:0.28259
+[49]    validation_0-logloss:0.28126
+[50]    validation_0-logloss:0.27915
+[51]    validation_0-logloss:0.27761
+[52]    validation_0-logloss:0.27559
+[53]    validation_0-logloss:0.27301
+[54]    validation_0-logloss:0.27111
+[55]    validation_0-logloss:0.26906
+[56]    validation_0-logloss:0.26701
+[57]    validation_0-logloss:0.26519
+[58]    validation_0-logloss:0.26203
+[59]    validation_0-logloss:0.26003
+[60]    validation_0-logloss:0.25602
+[61]    validation_0-logloss:0.25475
+[62]    validation_0-logloss:0.25193
+[63]    validation_0-logloss:0.25071
+[64]    validation_0-logloss:0.24891
+[65]    validation_0-logloss:0.24781
+[66]    validation_0-logloss:0.24682
+[67]    validation_0-logloss:0.24529
+[68]    validation_0-logloss:0.24335
+[69]    validation_0-logloss:0.24104
+[70]    validation_0-logloss:0.23938
+[71]    validation_0-logloss:0.23817
+[72]    validation_0-logloss:0.23673
+[73]    validation_0-logloss:0.23467
+[74]    validation_0-logloss:0.23117
+[75]    validation_0-logloss:0.22980
+[76]    validation_0-logloss:0.22815
+[77]    validation_0-logloss:0.22676
+[78]    validation_0-logloss:0.22522
+[79]    validation_0-logloss:0.22398
+[80]    validation_0-logloss:0.22246
+[81]    validation_0-logloss:0.22122
+[82]    validation_0-logloss:0.22026
+[83]    validation_0-logloss:0.21934
+[84]    validation_0-logloss:0.21790
+[85]    validation_0-logloss:0.21653
+[86]    validation_0-logloss:0.21514
+[87]    validation_0-logloss:0.21410
+[88]    validation_0-logloss:0.21231
+[89]    validation_0-logloss:0.21114
+[90]    validation_0-logloss:0.21029
+[91]    validation_0-logloss:0.20920
+[92]    validation_0-logloss:0.20816
+[93]    validation_0-logloss:0.20726
+[94]    validation_0-logloss:0.20642
+[95]    validation_0-logloss:0.20543
+[96]    validation_0-logloss:0.20474
+[97]    validation_0-logloss:0.20350
+[98]    validation_0-logloss:0.20234
+[99]    validation_0-logloss:0.20142
+[0] validation_0-logloss:0.52601
+[1] validation_0-logloss:0.51538
+[2] validation_0-logloss:0.50440
+[3] validation_0-logloss:0.49356
+[4] validation_0-logloss:0.48461
+[5] validation_0-logloss:0.47336
+[6] validation_0-logloss:0.46526
+[7] validation_0-logloss:0.45179
+[8] validation_0-logloss:0.44113
+[9] validation_0-logloss:0.43381
+[10]    validation_0-logloss:0.42778
+[11]    validation_0-logloss:0.42163
+[12]    validation_0-logloss:0.41066
+[13]    validation_0-logloss:0.40575
+[14]    validation_0-logloss:0.39971
+[15]    validation_0-logloss:0.39115
+[16]    validation_0-logloss:0.38615
+[17]    validation_0-logloss:0.38129
+[18]    validation_0-logloss:0.37686
+[19]    validation_0-logloss:0.37271
+[20]    validation_0-logloss:0.36870
+[21]    validation_0-logloss:0.36354
+[22]    validation_0-logloss:0.35989
+[23]    validation_0-logloss:0.35543
+[24]    validation_0-logloss:0.35138
+[25]    validation_0-logloss:0.34777
+[26]    validation_0-logloss:0.34400
+[27]    validation_0-logloss:0.34057
+[28]    validation_0-logloss:0.33689
+[29]    validation_0-logloss:0.33363
+[30]    validation_0-logloss:0.32941
+[31]    validation_0-logloss:0.32679
+[32]    validation_0-logloss:0.32423
+[33]    validation_0-logloss:0.32174
+[34]    validation_0-logloss:0.31815
+[35]    validation_0-logloss:0.31550
+[36]    validation_0-logloss:0.31299
+[37]    validation_0-logloss:0.31033
+[38]    validation_0-logloss:0.30729
+[39]    validation_0-logloss:0.30214
+[40]    validation_0-logloss:0.29976
+[41]    validation_0-logloss:0.29689
+[42]    validation_0-logloss:0.29445
+[43]    validation_0-logloss:0.29198
+[44]    validation_0-logloss:0.28688
+[45]    validation_0-logloss:0.28447
+[46]    validation_0-logloss:0.28254
+[47]    validation_0-logloss:0.27933
+[48]    validation_0-logloss:0.27734
+[49]    validation_0-logloss:0.27512
+[50]    validation_0-logloss:0.27280
+[51]    validation_0-logloss:0.27130
+[52]    validation_0-logloss:0.26924
+[53]    validation_0-logloss:0.26517
+[54]    validation_0-logloss:0.26364
+[55]    validation_0-logloss:0.26190
+[56]    validation_0-logloss:0.26016
+[57]    validation_0-logloss:0.25785
+[58]    validation_0-logloss:0.25638
+[59]    validation_0-logloss:0.25408
+[60]    validation_0-logloss:0.25132
+[61]    validation_0-logloss:0.24955
+[62]    validation_0-logloss:0.24825
+[63]    validation_0-logloss:0.24681
+[64]    validation_0-logloss:0.24497
+[65]    validation_0-logloss:0.24383
+[66]    validation_0-logloss:0.24177
+[67]    validation_0-logloss:0.24088
+[68]    validation_0-logloss:0.23878
+[69]    validation_0-logloss:0.23680
+[70]    validation_0-logloss:0.23584
+[71]    validation_0-logloss:0.23389
+[72]    validation_0-logloss:0.23307
+[73]    validation_0-logloss:0.23113
+[74]    validation_0-logloss:0.23004
+[75]    validation_0-logloss:0.22879
+[76]    validation_0-logloss:0.22774
+[77]    validation_0-logloss:0.22632
+[78]    validation_0-logloss:0.22489
+[79]    validation_0-logloss:0.22360
+[80]    validation_0-logloss:0.22250
+[81]    validation_0-logloss:0.22155
+[82]    validation_0-logloss:0.21995
+[83]    validation_0-logloss:0.21815
+[84]    validation_0-logloss:0.21686
+[85]    validation_0-logloss:0.21535
+[86]    validation_0-logloss:0.21351
+[87]    validation_0-logloss:0.21080
+[88]    validation_0-logloss:0.20959
+[89]    validation_0-logloss:0.20751
+[90]    validation_0-logloss:0.20623
+[91]    validation_0-logloss:0.20498
+[92]    validation_0-logloss:0.20390
+[93]    validation_0-logloss:0.20230
+[94]    validation_0-logloss:0.20146
+[95]    validation_0-logloss:0.20062
+[96]    validation_0-logloss:0.19968
+[97]    validation_0-logloss:0.19882
+[98]    validation_0-logloss:0.19817
+[99]    validation_0-logloss:0.19596
+Fold 1 - Train Score: 0.9598, Test Score: 0.9407
+Fold 2 - Train Score: 0.9567, Test Score: 0.9443
+Fold 3 - Train Score: 0.9565, Test Score: 0.9470
+Fold 4 - Train Score: 0.9559, Test Score: 0.9455
+Fold 5 - Train Score: 0.9579, Test Score: 0.9433</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="analysis" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="analysis"><span class="header-section-number">2.5</span> Analysis</h2>
+<p><strong>Data Analysis Method</strong>: <em>Describe the statistical or analytical methods that will be used to analyze the data.</em></p>
+<div id="4a844f6f" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model on the entire dataset</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the XGBClassifier without early stopping here</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> xgb.XGBClassifier(</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    tree_method<span class="op">=</span><span class="st">"hist"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    min_child_weight<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    gamma<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    subsample<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    colsample_bytree<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>clf.fit(X, y)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>num_schedules <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>test_schedules <span class="op">=</span> random_combination_with_replacement(T, N, num_schedules)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>test_neighbors <span class="op">=</span> create_neighbors_list(test_schedules)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>test_objectives <span class="op">=</span> [[calculate_objective(test_neighbor[<span class="dv">0</span>], s, d, q), calculate_objective(test_neighbor[<span class="dv">1</span>], s, d, q)] <span class="cf">for</span> test_neighbor <span class="kw">in</span> test_neighbors]</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>test_rankings <span class="op">=</span> [<span class="dv">0</span> <span class="cf">if</span> test_obj[<span class="dv">0</span>] <span class="op">&lt;</span> test_obj[<span class="dv">1</span>] <span class="cf">else</span> <span class="dv">1</span> <span class="cf">for</span> test_obj <span class="kw">in</span> test_objectives]</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_schedules):</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Neighbors: </span><span class="sc">{</span>test_neighbors[i]<span class="sc">}</span><span class="ss">,</span><span class="ch">\n</span><span class="ss">Objectives: </span><span class="sc">{</span>objectives[i]<span class="sc">}</span><span class="ss">, Ranking: </span><span class="sc">{</span>rankings[i]<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>input_X <span class="op">=</span> test_neighbors</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> []</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> neighbor <span class="kw">in</span> input_X:</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    X_new.append(neighbor[<span class="dv">0</span>] <span class="op">+</span> neighbor[<span class="dv">1</span>])</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict the target for new data</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> clf.predict(X_new)</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="co"># If you want to get the probability estimates</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>y_pred_proba <span class="op">=</span> clf.predict_proba(X_new)</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"rankings = </span><span class="sc">{</span>np<span class="sc">.</span>array(test_rankings)<span class="sc">}</span><span class="ss">, </span><span class="ch">\n</span><span class="ss">y_pred = </span><span class="sc">{</span>y_pred<span class="sc">}</span><span class="ss">, </span><span class="ch">\n</span><span class="ss">y_pred_proba = </span><span class="ch">\n</span><span class="sc">{</span>y_pred_proba<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total number of combinations: 51895935
+Neighbors: ([4, 3, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [4, 3, 1, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+Objectives: [46.770431244218386, 53.202917435127475], Ranking: 0
+
+Neighbors: ([5, 4, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [6, 3, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]),
+Objectives: [57.869940438864106, 52.16874250971341], Ranking: 1
+
+Neighbors: ([4, 1, 3, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], [4, 1, 3, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+Objectives: [81.93609100388147, 89.24223032411952], Ranking: 0
+
+Neighbors: ([9, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], [9, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]),
+Objectives: [81.45210346194925, 93.75595263062714], Ranking: 0
+
+Neighbors: ([4, 2, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [4, 2, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
+Objectives: [42.75077195837623, 39.65741365840285], Ranking: 1
+
+Neighbors: ([8, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [8, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
+Objectives: [61.49452639027216, 67.08575383440407], Ranking: 0
+
+Neighbors: ([6, 2, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0], [6, 2, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
+Objectives: [41.4098501236233, 29.891252579712937], Ranking: 1
+
+Neighbors: ([3, 6, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 6, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0]),
+Objectives: [57.3474750282602, 49.2705642604933], Ranking: 1
+
+Neighbors: ([4, 3, 2, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], [4, 3, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]),
+Objectives: [40.49523888440565, 40.4948314280812], Ranking: 1
+
+Neighbors: ([4, 4, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 4, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+Objectives: [48.12597534145, 35.343204303978005], Ranking: 1
+
+rankings = [1 0 0 0 0 1 1 1 1 0], 
+y_pred = [1 0 0 0 1 1 1 1 1 0], 
+y_pred_proba = 
+[[0.23344398 0.766556  ]
+ [0.7096498  0.29035017]
+ [0.6868384  0.3131616 ]
+ [0.77367604 0.22632399]
+ [0.20387214 0.79612786]
+ [0.19631404 0.80368596]
+ [0.11089581 0.8891042 ]
+ [0.034863   0.965137  ]
+ [0.11826545 0.88173455]
+ [0.93600726 0.06399276]]</code></pre>
+</div>
+</div>
+<section id="data-processing" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="data-processing"><span class="header-section-number">2.5.1</span> Data Processing</h3>
+<p><strong>Data Processing</strong>: <em>Describe how the raw data will be processed and prepared for analysis.</em></p>
+</section>
+<section id="statistical-tests" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="statistical-tests"><span class="header-section-number">2.5.2</span> Statistical Tests</h3>
+<p><strong>Statistical Tests</strong>: <em>List the statistical tests that will be used to test the hypotheses.</em></p>
+</section>
+</section>
+<section id="results" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="results"><span class="header-section-number">2.6</span> Results</h2>
+<p><strong>Expected Results</strong>: <em>Describe the expected outcomes or results of the experiment.</em></p>
+</section>
+<section id="discussion" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="discussion"><span class="header-section-number">2.7</span> Discussion</h2>
+<p><strong>Discussion Points</strong>: <em>Outline key points for discussion based on possible results. This may include interpretation of results, implications for theory and practice, limitations, and suggestions for future research.</em></p>
+</section>
+<section id="timeline" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="timeline"><span class="header-section-number">2.8</span> Timeline</h2>
+<p><strong>Timeline</strong>: <em>This experiment was started on 25-07-2024</em></p>
+</section>
+<section id="references" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="references"><span class="header-section-number">2.9</span> References</h2>
+<p><strong>References</strong>: <em>List any references or sources cited in the protocol.</em></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./intro.html" class="pagination-link" aria-label="Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
