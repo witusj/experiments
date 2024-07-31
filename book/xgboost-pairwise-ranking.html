@@ -57,7 +57,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -104,6 +104,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script>
 <script src="site_libs/quarto-diagram/mermaid-init.js"></script>
 <link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script type="text/javascript">
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+if (typeof require !== 'undefined') {
+require.undef("plotly");
+requirejs.config({
+    paths: {
+        'plotly': ['https://cdn.plot.ly/plotly-2.32.0.min']
+    }
+});
+require(['plotly'], function(Plotly) {
+    window._Plotly = Plotly;
+});
+}
+</script>
+
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -211,15 +230,10 @@ window.Quarto = {
   <li><a href="#sample-size-and-selection" id="toc-sample-size-and-selection" class="nav-link" data-scroll-target="#sample-size-and-selection"><span class="header-section-number">2.4.5</span> Sample Size and Selection</a></li>
   <li><a href="#experimental-procedure" id="toc-experimental-procedure" class="nav-link" data-scroll-target="#experimental-procedure"><span class="header-section-number">2.4.6</span> Experimental Procedure</a></li>
   </ul></li>
-  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis"><span class="header-section-number">2.5</span> Analysis</a>
-  <ul class="collapse">
-  <li><a href="#data-processing" id="toc-data-processing" class="nav-link" data-scroll-target="#data-processing"><span class="header-section-number">2.5.1</span> Data Processing</a></li>
-  <li><a href="#statistical-tests" id="toc-statistical-tests" class="nav-link" data-scroll-target="#statistical-tests"><span class="header-section-number">2.5.2</span> Statistical Tests</a></li>
-  </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">2.6</span> Results</a></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">2.7</span> Discussion</a></li>
-  <li><a href="#timeline" id="toc-timeline" class="nav-link" data-scroll-target="#timeline"><span class="header-section-number">2.8</span> Timeline</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">2.9</span> References</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">2.5</span> Results</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">2.6</span> Discussion</a></li>
+  <li><a href="#timeline" id="toc-timeline" class="nav-link" data-scroll-target="#timeline"><span class="header-section-number">2.7</span> Timeline</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">2.8</span> References</a></li>
   </ul>
 </nav>
     </div>
@@ -257,18 +271,22 @@ window.Quarto = {
 </section>
 <section id="hypothesis" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="hypothesis"><span class="header-section-number">2.3</span> Hypothesis</h2>
-<p><strong>Hypothesis</strong>: <em>An XGBoost ranking model outperforms simple enumeration of each element of the pair.</em></p>
+<p><strong>Hypothesis</strong>: <em>An XGBoost ranking model outperforms simple evaluation of each individual element of the pair.</em></p>
 </section>
 <section id="methodology" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="methodology"><span class="header-section-number">2.4</span> Methodology</h2>
 <section id="tools-and-materials" class="level3" data-number="2.4.1">
 <h3 data-number="2.4.1" class="anchored" data-anchor-id="tools-and-materials"><span class="header-section-number">2.4.1</span> Tools and Materials</h3>
 <p><strong>Tools and Materials</strong>: <em>List all tools, software, and materials needed for the experiment.</em></p>
-<div id="898886d2" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split, cross_val_score, StratifiedKFold, GridSearchCV</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.base <span class="im">import</span> clone</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="052c6009" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split, cross_val_score, StratifiedKFold, GridSearchCV</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.base <span class="im">import</span> clone</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> xgboost.callback <span class="im">import</span> TrainingCallback</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="experimental-design" class="level3" data-number="2.4.2">
@@ -276,7 +294,7 @@ window.Quarto = {
 <p><strong>Design</strong>: <em>We will create a random set of pairs of neighboring schedules with</em> <span class="math inline">\(N = 12\)</span> patients and <span class="math inline">\(\ T = 18\)</span> intervals of length <span class="math inline">\(d = 5\)</span>.</p>
 <p><em>A neighborhood consists of all schedules that differ by one patient only. Eg: ([2,1,1], [1,1,2]) are neighbors and ([2,1,1], [1,0,3]) are not.</em></p>
 <p>*Service times will have a discrete. The probability of a scheduled patient not showing up will be <span class="math inline">\(q = 0.20\)</span>.</p>
-<div id="c6b5931b" class="cell" data-execution_count="2">
+<div id="c590fc8b" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">12</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="dv">18</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="dv">5</span></span>
@@ -331,56 +349,75 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>Step 1</strong>: <em>Randomly select a subset of schedules.</em></p>
-<div id="8cc1e32b" class="cell" data-execution_count="3">
+<div id="52734437" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functions <span class="im">import</span> random_combination_with_replacement</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>num_schedules <span class="op">=</span> <span class="dv">20000</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>schedules <span class="op">=</span> random_combination_with_replacement(T, N, num_schedules)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> schedule <span class="kw">in</span> schedules[:<span class="dv">5</span>]:</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Schedule: </span><span class="sc">{</span>schedule<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.time()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>schedules <span class="op">=</span> random_combination_with_replacement(T, N, num_schedules)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> schedule <span class="kw">in</span> schedules[:<span class="dv">5</span>]:</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Schedule: </span><span class="sc">{</span>schedule<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> time.time()</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Processing time: </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">}</span><span class="ss"> seconds</span><span class="ch">\n</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Total number of combinations: 51895935
-Schedule: [6, 2, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0]
-Schedule: [5, 2, 3, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-Schedule: [5, 6, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Schedule: [7, 2, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Schedule: [5, 2, 1, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</code></pre>
+Schedule: [4, 2, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+Schedule: [5, 3, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Schedule: [6, 2, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+Schedule: [4, 3, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Schedule: [5, 1, 4, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+
+Processing time: 0.23244333267211914 seconds
+</code></pre>
 </div>
 </div>
 <p><strong>Step 2</strong>: <em>Create pairs of neighboring schedules.</em></p>
-<div id="8ba67464" class="cell" data-execution_count="4">
+<div id="84c43b1f" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functions <span class="im">import</span> create_neighbors_list</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>neighbors <span class="op">=</span> create_neighbors_list(schedules)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> neighbor <span class="kw">in</span> neighbors[:<span class="dv">5</span>]:</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Neighbor: </span><span class="sc">{</span>neighbor[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.time()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>neighbors <span class="op">=</span> create_neighbors_list(schedules)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> neighbor <span class="kw">in</span> neighbors[:<span class="dv">5</span>]:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Neighbor: </span><span class="sc">{</span>neighbor[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> time.time()  </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Processing time: </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">}</span><span class="ss"> seconds</span><span class="ch">\n</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Neighbor: [6, 2, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0]
-Neighbor: [5, 2, 3, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0]
-Neighbor: [5, 6, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Neighbor: [7, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Neighbor: [5, 2, 1, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]</code></pre>
+<pre><code>Neighbor: [4, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+Neighbor: [4, 3, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0]
+Neighbor: [6, 2, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0]
+Neighbor: [4, 3, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+Neighbor: [5, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0]
+
+Processing time: 0.10906195640563965 seconds
+</code></pre>
 </div>
 </div>
 <p><strong>Step 3</strong>: <em>For each schedule in each pair calculate the objective. For each pair save the index of the schedule that has the lowest objective value.</em></p>
-<div id="f0fd6d97" class="cell" data-execution_count="5">
+<div id="98c962b8" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functions <span class="im">import</span> calculate_objective</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>objectives <span class="op">=</span> [[calculate_objective(neighbor[<span class="dv">0</span>], s, d, q), calculate_objective(neighbor[<span class="dv">1</span>], s, d, q)] <span class="cf">for</span> neighbor <span class="kw">in</span> neighbors]</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>rankings <span class="op">=</span> [<span class="dv">0</span> <span class="cf">if</span> obj[<span class="dv">0</span>] <span class="op">&lt;</span> obj[<span class="dv">1</span>] <span class="cf">else</span> <span class="dv">1</span> <span class="cf">for</span> obj <span class="kw">in</span> objectives]</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Objectives: </span><span class="sc">{</span>objectives[i]<span class="sc">}</span><span class="ss">, Ranking: </span><span class="sc">{</span>rankings[i]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.time()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>objectives <span class="op">=</span> [[calculate_objective(neighbor[<span class="dv">0</span>], s, d, q), calculate_objective(neighbor[<span class="dv">1</span>], s, d, q)] <span class="cf">for</span> neighbor <span class="kw">in</span> neighbors]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>rankings <span class="op">=</span> [<span class="dv">0</span> <span class="cf">if</span> obj[<span class="dv">0</span>] <span class="op">&lt;</span> obj[<span class="dv">1</span>] <span class="cf">else</span> <span class="dv">1</span> <span class="cf">for</span> obj <span class="kw">in</span> objectives]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Objectives: </span><span class="sc">{</span>objectives[i]<span class="sc">}</span><span class="ss">, Ranking: </span><span class="sc">{</span>rankings[i]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> time.time()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Processing time: </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">}</span><span class="ss"> seconds</span><span class="ch">\n</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Objectives: [46.770431244218386, 53.202917435127475], Ranking: 0
-Objectives: [57.869940438864106, 52.16874250971341], Ranking: 1
-Objectives: [81.93609100388147, 89.24223032411952], Ranking: 0
-Objectives: [81.45210346194925, 93.75595263062714], Ranking: 0
-Objectives: [42.75077195837623, 39.65741365840285], Ranking: 1</code></pre>
+<pre><code>Objectives: [32.88949118575489, 29.528796412409672], Ranking: 1
+Objectives: [49.40622378111562, 33.233815773716], Ranking: 1
+Objectives: [63.458700574122574, 54.14635241855684], Ranking: 1
+Objectives: [28.37783870949092, 28.366175764699978], Ranking: 1
+Objectives: [50.91841766119395, 48.76044755408287], Ranking: 1
+
+Processing time: 11.044336080551147 seconds
+</code></pre>
 </div>
 </div>
 <p><strong>Step 4</strong>: <em>Create training and test sets.</em></p>
-<div id="7280fe01" class="cell" data-execution_count="6">
+<div id="53c18d52" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the dataset</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> []</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> neighbor <span class="kw">in</span> neighbors:</span>
@@ -423,668 +460,279 @@ Objectives: [42.75077195837623, 39.65741365840285], Ranking: 1</code></pre>
 </div>
 </div>
 </div>
-<div id="2dffec12" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit_and_score(estimator, X_train, X_test, y_train, y_test):</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Fit the estimator on the train set and score it on both sets"""</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    estimator.fit(X_train, y_train, eval_set<span class="op">=</span>[(X_test, y_test)])</span>
+<div id="bead0c0c" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CustomCallback(TrainingCallback):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, period<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.period <span class="op">=</span> period</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    train_score <span class="op">=</span> estimator.score(X_train, y_train)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    test_score <span class="op">=</span> estimator.score(X_test, y_test)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> estimator, train_score, test_score</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> StratifiedKFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">94</span>)</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the XGBClassifier without early stopping here</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> xgb.XGBClassifier(</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    tree_method<span class="op">=</span><span class="st">"hist"</span>,</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    min_child_weight<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    gamma<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    subsample<span class="op">=</span><span class="fl">0.8</span>,</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    colsample_bytree<span class="op">=</span><span class="fl">0.8</span>,</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    early_stopping_rounds<span class="op">=</span><span class="dv">10</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> train_idx, test_idx <span class="kw">in</span> cv.split(X, y):</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    X_train, X_test <span class="op">=</span> X[train_idx], X[test_idx]</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    y_train, y_test <span class="op">=</span> y[train_idx], y[test_idx]</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    est, train_score, test_score <span class="op">=</span> fit_and_score(</span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>        clone(clf), X_train, X_test, y_train, y_test</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    results.append((est, train_score, test_score))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> after_iteration(<span class="va">self</span>, model, epoch, evals_log):</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (epoch <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="va">self</span>.period <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">, Evaluation log: </span><span class="sc">{</span>evals_log[<span class="st">'validation_0'</span>][<span class="st">'logloss'</span>][epoch]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit_and_score(estimator, X_train, X_test, y_train, y_test):</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Fit the estimator on the train set and score it on both sets"""</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    estimator.fit(X_train, y_train, eval_set<span class="op">=</span>[(X_test, y_test)], verbose<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    train_score <span class="op">=</span> estimator.score(X_train, y_train)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    test_score <span class="op">=</span> estimator.score(X_test, y_test)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> estimator, train_score, test_score</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> StratifiedKFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">94</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the XGBClassifier without early stopping here</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> xgb.XGBClassifier(</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    tree_method<span class="op">=</span><span class="st">"hist"</span>,</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    min_child_weight<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    gamma<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    subsample<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    colsample_bytree<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    early_stopping_rounds<span class="op">=</span><span class="dv">9</span>,</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    callbacks<span class="op">=</span>[CustomCallback(period<span class="op">=</span><span class="dv">10</span>)]</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Print results</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (est, train_score, test_score) <span class="kw">in</span> <span class="bu">enumerate</span>(results):</span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fold </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> - Train Score: </span><span class="sc">{</span>train_score<span class="sc">:.4f}</span><span class="ss">, Test Score: </span><span class="sc">{</span>test_score<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.time()</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> train_idx, test_idx <span class="kw">in</span> cv.split(X, y):</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    X_train, X_test <span class="op">=</span> X[train_idx], X[test_idx]</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    y_train, y_test <span class="op">=</span> y[train_idx], y[test_idx]</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    est, train_score, test_score <span class="op">=</span> fit_and_score(</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>        clone(clf), X_train, X_test, y_train, y_test</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    results.append((est, train_score, test_score))</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> time.time()</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Processing time: </span><span class="sc">{</span>end <span class="op">-</span> start<span class="sc">}</span><span class="ss"> seconds</span><span class="ch">\n</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[0] validation_0-logloss:0.52667
-[1] validation_0-logloss:0.51462
-[2] validation_0-logloss:0.50505
-[3] validation_0-logloss:0.49403
-[4] validation_0-logloss:0.47719
-[5] validation_0-logloss:0.46819
-[6] validation_0-logloss:0.45934
-[7] validation_0-logloss:0.45169
-[8] validation_0-logloss:0.44502
-[9] validation_0-logloss:0.43790
-[10]    validation_0-logloss:0.43233
-[11]    validation_0-logloss:0.42658
-[12]    validation_0-logloss:0.41747
-[13]    validation_0-logloss:0.41269
-[14]    validation_0-logloss:0.40777
-[15]    validation_0-logloss:0.40295
-[16]    validation_0-logloss:0.39807
-[17]    validation_0-logloss:0.39299
-[18]    validation_0-logloss:0.38887
-[19]    validation_0-logloss:0.38154
-[20]    validation_0-logloss:0.37742
-[21]    validation_0-logloss:0.37333
-[22]    validation_0-logloss:0.36980
-[23]    validation_0-logloss:0.36569
-[24]    validation_0-logloss:0.36179
-[25]    validation_0-logloss:0.35918
-[26]    validation_0-logloss:0.35602
-[27]    validation_0-logloss:0.35187
-[28]    validation_0-logloss:0.34834
-[29]    validation_0-logloss:0.34460
-[30]    validation_0-logloss:0.34124
-[31]    validation_0-logloss:0.33846
-[32]    validation_0-logloss:0.33569
-[33]    validation_0-logloss:0.33143
-[34]    validation_0-logloss:0.32858
-[35]    validation_0-logloss:0.32635
-[36]    validation_0-logloss:0.32196
-[37]    validation_0-logloss:0.31926
-[38]    validation_0-logloss:0.31704
-[39]    validation_0-logloss:0.31335
-[40]    validation_0-logloss:0.31197
-[41]    validation_0-logloss:0.30940
-[42]    validation_0-logloss:0.30675
-[43]    validation_0-logloss:0.30467
-[44]    validation_0-logloss:0.29993
-[45]    validation_0-logloss:0.29576
-[46]    validation_0-logloss:0.29352
-[47]    validation_0-logloss:0.29044
-[48]    validation_0-logloss:0.28854
-[49]    validation_0-logloss:0.28440
-[50]    validation_0-logloss:0.28129
-[51]    validation_0-logloss:0.27803
-[52]    validation_0-logloss:0.27645
-[53]    validation_0-logloss:0.27438
-[54]    validation_0-logloss:0.27142
-[55]    validation_0-logloss:0.26970
-[56]    validation_0-logloss:0.26762
-[57]    validation_0-logloss:0.26627
-[58]    validation_0-logloss:0.26509
-[59]    validation_0-logloss:0.26308
-[60]    validation_0-logloss:0.25970
-[61]    validation_0-logloss:0.25787
-[62]    validation_0-logloss:0.25591
-[63]    validation_0-logloss:0.25489
-[64]    validation_0-logloss:0.25222
-[65]    validation_0-logloss:0.25028
-[66]    validation_0-logloss:0.24868
-[67]    validation_0-logloss:0.24757
-[68]    validation_0-logloss:0.24448
-[69]    validation_0-logloss:0.24271
-[70]    validation_0-logloss:0.24117
-[71]    validation_0-logloss:0.24011
-[72]    validation_0-logloss:0.23773
-[73]    validation_0-logloss:0.23515
-[74]    validation_0-logloss:0.23367
-[75]    validation_0-logloss:0.23240
-[76]    validation_0-logloss:0.23169
-[77]    validation_0-logloss:0.22868
-[78]    validation_0-logloss:0.22791
-[79]    validation_0-logloss:0.22660
-[80]    validation_0-logloss:0.22425
-[81]    validation_0-logloss:0.22333
-[82]    validation_0-logloss:0.22219
-[83]    validation_0-logloss:0.22088
-[84]    validation_0-logloss:0.21910
-[85]    validation_0-logloss:0.21769
-[86]    validation_0-logloss:0.21624
-[87]    validation_0-logloss:0.21516
-[88]    validation_0-logloss:0.21412
-[89]    validation_0-logloss:0.21270
-[90]    validation_0-logloss:0.21164
-[91]    validation_0-logloss:0.21081
-[92]    validation_0-logloss:0.20994
-[93]    validation_0-logloss:0.20707
-[94]    validation_0-logloss:0.20556
-[95]    validation_0-logloss:0.20440
-[96]    validation_0-logloss:0.20197
-[97]    validation_0-logloss:0.20109
-[98]    validation_0-logloss:0.20029
-[99]    validation_0-logloss:0.19910
-[0] validation_0-logloss:0.52647
-[1] validation_0-logloss:0.51620
-[2] validation_0-logloss:0.50538
-[3] validation_0-logloss:0.48894
-[4] validation_0-logloss:0.48029
-[5] validation_0-logloss:0.47141
-[6] validation_0-logloss:0.46397
-[7] validation_0-logloss:0.45627
-[8] validation_0-logloss:0.44858
-[9] validation_0-logloss:0.44175
-[10]    validation_0-logloss:0.43581
-[11]    validation_0-logloss:0.43018
-[12]    validation_0-logloss:0.41914
-[13]    validation_0-logloss:0.41416
-[14]    validation_0-logloss:0.40876
-[15]    validation_0-logloss:0.40372
-[16]    validation_0-logloss:0.39834
-[17]    validation_0-logloss:0.39402
-[18]    validation_0-logloss:0.38945
-[19]    validation_0-logloss:0.38563
-[20]    validation_0-logloss:0.37858
-[21]    validation_0-logloss:0.37444
-[22]    validation_0-logloss:0.36732
-[23]    validation_0-logloss:0.36258
-[24]    validation_0-logloss:0.35924
-[25]    validation_0-logloss:0.35563
-[26]    validation_0-logloss:0.35247
-[27]    validation_0-logloss:0.34841
-[28]    validation_0-logloss:0.34456
-[29]    validation_0-logloss:0.34082
-[30]    validation_0-logloss:0.33775
-[31]    validation_0-logloss:0.33484
-[32]    validation_0-logloss:0.33232
-[33]    validation_0-logloss:0.32895
-[34]    validation_0-logloss:0.32568
-[35]    validation_0-logloss:0.32322
-[36]    validation_0-logloss:0.32036
-[37]    validation_0-logloss:0.31747
-[38]    validation_0-logloss:0.31523
-[39]    validation_0-logloss:0.31219
-[40]    validation_0-logloss:0.30878
-[41]    validation_0-logloss:0.30642
-[42]    validation_0-logloss:0.30419
-[43]    validation_0-logloss:0.30191
-[44]    validation_0-logloss:0.30012
-[45]    validation_0-logloss:0.29384
-[46]    validation_0-logloss:0.29204
-[47]    validation_0-logloss:0.29005
-[48]    validation_0-logloss:0.28438
-[49]    validation_0-logloss:0.28254
-[50]    validation_0-logloss:0.28029
-[51]    validation_0-logloss:0.27828
-[52]    validation_0-logloss:0.27585
-[53]    validation_0-logloss:0.27382
-[54]    validation_0-logloss:0.27166
-[55]    validation_0-logloss:0.26952
-[56]    validation_0-logloss:0.26741
-[57]    validation_0-logloss:0.26573
-[58]    validation_0-logloss:0.26175
-[59]    validation_0-logloss:0.26020
-[60]    validation_0-logloss:0.25823
-[61]    validation_0-logloss:0.25684
-[62]    validation_0-logloss:0.25424
-[63]    validation_0-logloss:0.25264
-[64]    validation_0-logloss:0.24998
-[65]    validation_0-logloss:0.24882
-[66]    validation_0-logloss:0.24747
-[67]    validation_0-logloss:0.24514
-[68]    validation_0-logloss:0.24361
-[69]    validation_0-logloss:0.24217
-[70]    validation_0-logloss:0.24055
-[71]    validation_0-logloss:0.23928
-[72]    validation_0-logloss:0.23734
-[73]    validation_0-logloss:0.23487
-[74]    validation_0-logloss:0.23305
-[75]    validation_0-logloss:0.23091
-[76]    validation_0-logloss:0.22970
-[77]    validation_0-logloss:0.22793
-[78]    validation_0-logloss:0.22714
-[79]    validation_0-logloss:0.22578
-[80]    validation_0-logloss:0.22450
-[81]    validation_0-logloss:0.22371
-[82]    validation_0-logloss:0.22281
-[83]    validation_0-logloss:0.22140
-[84]    validation_0-logloss:0.22026
-[85]    validation_0-logloss:0.21852
-[86]    validation_0-logloss:0.21749
-[87]    validation_0-logloss:0.21581
-[88]    validation_0-logloss:0.21426
-[89]    validation_0-logloss:0.21280
-[90]    validation_0-logloss:0.21134
-[91]    validation_0-logloss:0.21034
-[92]    validation_0-logloss:0.20822
-[93]    validation_0-logloss:0.20624
-[94]    validation_0-logloss:0.20419
-[95]    validation_0-logloss:0.20337
-[96]    validation_0-logloss:0.20221
-[97]    validation_0-logloss:0.20093
-[98]    validation_0-logloss:0.19999
-[99]    validation_0-logloss:0.19902
-[0] validation_0-logloss:0.52661
-[1] validation_0-logloss:0.51614
-[2] validation_0-logloss:0.50641
-[3] validation_0-logloss:0.48666
-[4] validation_0-logloss:0.47627
-[5] validation_0-logloss:0.46799
-[6] validation_0-logloss:0.45951
-[7] validation_0-logloss:0.45150
-[8] validation_0-logloss:0.43939
-[9] validation_0-logloss:0.42978
-[10]    validation_0-logloss:0.42436
-[11]    validation_0-logloss:0.41881
-[12]    validation_0-logloss:0.40987
-[13]    validation_0-logloss:0.40460
-[14]    validation_0-logloss:0.39954
-[15]    validation_0-logloss:0.39581
-[16]    validation_0-logloss:0.38952
-[17]    validation_0-logloss:0.38467
-[18]    validation_0-logloss:0.38019
-[19]    validation_0-logloss:0.37550
-[20]    validation_0-logloss:0.37111
-[21]    validation_0-logloss:0.36790
-[22]    validation_0-logloss:0.36443
-[23]    validation_0-logloss:0.36045
-[24]    validation_0-logloss:0.35667
-[25]    validation_0-logloss:0.35243
-[26]    validation_0-logloss:0.34886
-[27]    validation_0-logloss:0.34464
-[28]    validation_0-logloss:0.34208
-[29]    validation_0-logloss:0.33904
-[30]    validation_0-logloss:0.33517
-[31]    validation_0-logloss:0.33191
-[32]    validation_0-logloss:0.32875
-[33]    validation_0-logloss:0.32590
-[34]    validation_0-logloss:0.32329
-[35]    validation_0-logloss:0.32089
-[36]    validation_0-logloss:0.31885
-[37]    validation_0-logloss:0.31652
-[38]    validation_0-logloss:0.31352
-[39]    validation_0-logloss:0.31104
-[40]    validation_0-logloss:0.30817
-[41]    validation_0-logloss:0.30617
-[42]    validation_0-logloss:0.30216
-[43]    validation_0-logloss:0.29897
-[44]    validation_0-logloss:0.29532
-[45]    validation_0-logloss:0.29325
-[46]    validation_0-logloss:0.29055
-[47]    validation_0-logloss:0.28787
-[48]    validation_0-logloss:0.28514
-[49]    validation_0-logloss:0.28286
-[50]    validation_0-logloss:0.28128
-[51]    validation_0-logloss:0.27899
-[52]    validation_0-logloss:0.27544
-[53]    validation_0-logloss:0.27384
-[54]    validation_0-logloss:0.27274
-[55]    validation_0-logloss:0.27165
-[56]    validation_0-logloss:0.26943
-[57]    validation_0-logloss:0.26723
-[58]    validation_0-logloss:0.26532
-[59]    validation_0-logloss:0.26322
-[60]    validation_0-logloss:0.26104
-[61]    validation_0-logloss:0.25930
-[62]    validation_0-logloss:0.25738
-[63]    validation_0-logloss:0.25641
-[64]    validation_0-logloss:0.25479
-[65]    validation_0-logloss:0.25307
-[66]    validation_0-logloss:0.25181
-[67]    validation_0-logloss:0.25077
-[68]    validation_0-logloss:0.24949
-[69]    validation_0-logloss:0.24790
-[70]    validation_0-logloss:0.24637
-[71]    validation_0-logloss:0.24392
-[72]    validation_0-logloss:0.24213
-[73]    validation_0-logloss:0.24065
-[74]    validation_0-logloss:0.23964
-[75]    validation_0-logloss:0.23766
-[76]    validation_0-logloss:0.23403
-[77]    validation_0-logloss:0.23246
-[78]    validation_0-logloss:0.23038
-[79]    validation_0-logloss:0.22885
-[80]    validation_0-logloss:0.22773
-[81]    validation_0-logloss:0.22659
-[82]    validation_0-logloss:0.22508
-[83]    validation_0-logloss:0.22393
-[84]    validation_0-logloss:0.22260
-[85]    validation_0-logloss:0.22164
-[86]    validation_0-logloss:0.22043
-[87]    validation_0-logloss:0.21973
-[88]    validation_0-logloss:0.21881
-[89]    validation_0-logloss:0.21707
-[90]    validation_0-logloss:0.21537
-[91]    validation_0-logloss:0.21418
-[92]    validation_0-logloss:0.21260
-[93]    validation_0-logloss:0.21147
-[94]    validation_0-logloss:0.21050
-[95]    validation_0-logloss:0.20898
-[96]    validation_0-logloss:0.20740
-[97]    validation_0-logloss:0.20641
-[98]    validation_0-logloss:0.20468
-[99]    validation_0-logloss:0.20404
-[0] validation_0-logloss:0.52644
-[1] validation_0-logloss:0.51427
-[2] validation_0-logloss:0.50417
-[3] validation_0-logloss:0.48675
-[4] validation_0-logloss:0.47862
-[5] validation_0-logloss:0.47014
-[6] validation_0-logloss:0.45705
-[7] validation_0-logloss:0.45073
-[8] validation_0-logloss:0.44445
-[9] validation_0-logloss:0.43322
-[10]    validation_0-logloss:0.42622
-[11]    validation_0-logloss:0.42041
-[12]    validation_0-logloss:0.41393
-[13]    validation_0-logloss:0.40885
-[14]    validation_0-logloss:0.40369
-[15]    validation_0-logloss:0.39684
-[16]    validation_0-logloss:0.39227
-[17]    validation_0-logloss:0.38842
-[18]    validation_0-logloss:0.38250
-[19]    validation_0-logloss:0.37723
-[20]    validation_0-logloss:0.37115
-[21]    validation_0-logloss:0.36631
-[22]    validation_0-logloss:0.36270
-[23]    validation_0-logloss:0.35895
-[24]    validation_0-logloss:0.35522
-[25]    validation_0-logloss:0.35182
-[26]    validation_0-logloss:0.34879
-[27]    validation_0-logloss:0.34460
-[28]    validation_0-logloss:0.34081
-[29]    validation_0-logloss:0.33681
-[30]    validation_0-logloss:0.33415
-[31]    validation_0-logloss:0.33062
-[32]    validation_0-logloss:0.32617
-[33]    validation_0-logloss:0.32350
-[34]    validation_0-logloss:0.32081
-[35]    validation_0-logloss:0.31722
-[36]    validation_0-logloss:0.31504
-[37]    validation_0-logloss:0.31026
-[38]    validation_0-logloss:0.30834
-[39]    validation_0-logloss:0.30525
-[40]    validation_0-logloss:0.30298
-[41]    validation_0-logloss:0.30146
-[42]    validation_0-logloss:0.29949
-[43]    validation_0-logloss:0.29668
-[44]    validation_0-logloss:0.29437
-[45]    validation_0-logloss:0.28950
-[46]    validation_0-logloss:0.28678
-[47]    validation_0-logloss:0.28469
-[48]    validation_0-logloss:0.28259
-[49]    validation_0-logloss:0.28126
-[50]    validation_0-logloss:0.27915
-[51]    validation_0-logloss:0.27761
-[52]    validation_0-logloss:0.27559
-[53]    validation_0-logloss:0.27301
-[54]    validation_0-logloss:0.27111
-[55]    validation_0-logloss:0.26906
-[56]    validation_0-logloss:0.26701
-[57]    validation_0-logloss:0.26519
-[58]    validation_0-logloss:0.26203
-[59]    validation_0-logloss:0.26003
-[60]    validation_0-logloss:0.25602
-[61]    validation_0-logloss:0.25475
-[62]    validation_0-logloss:0.25193
-[63]    validation_0-logloss:0.25071
-[64]    validation_0-logloss:0.24891
-[65]    validation_0-logloss:0.24781
-[66]    validation_0-logloss:0.24682
-[67]    validation_0-logloss:0.24529
-[68]    validation_0-logloss:0.24335
-[69]    validation_0-logloss:0.24104
-[70]    validation_0-logloss:0.23938
-[71]    validation_0-logloss:0.23817
-[72]    validation_0-logloss:0.23673
-[73]    validation_0-logloss:0.23467
-[74]    validation_0-logloss:0.23117
-[75]    validation_0-logloss:0.22980
-[76]    validation_0-logloss:0.22815
-[77]    validation_0-logloss:0.22676
-[78]    validation_0-logloss:0.22522
-[79]    validation_0-logloss:0.22398
-[80]    validation_0-logloss:0.22246
-[81]    validation_0-logloss:0.22122
-[82]    validation_0-logloss:0.22026
-[83]    validation_0-logloss:0.21934
-[84]    validation_0-logloss:0.21790
-[85]    validation_0-logloss:0.21653
-[86]    validation_0-logloss:0.21514
-[87]    validation_0-logloss:0.21410
-[88]    validation_0-logloss:0.21231
-[89]    validation_0-logloss:0.21114
-[90]    validation_0-logloss:0.21029
-[91]    validation_0-logloss:0.20920
-[92]    validation_0-logloss:0.20816
-[93]    validation_0-logloss:0.20726
-[94]    validation_0-logloss:0.20642
-[95]    validation_0-logloss:0.20543
-[96]    validation_0-logloss:0.20474
-[97]    validation_0-logloss:0.20350
-[98]    validation_0-logloss:0.20234
-[99]    validation_0-logloss:0.20142
-[0] validation_0-logloss:0.52601
-[1] validation_0-logloss:0.51538
-[2] validation_0-logloss:0.50440
-[3] validation_0-logloss:0.49356
-[4] validation_0-logloss:0.48461
-[5] validation_0-logloss:0.47336
-[6] validation_0-logloss:0.46526
-[7] validation_0-logloss:0.45179
-[8] validation_0-logloss:0.44113
-[9] validation_0-logloss:0.43381
-[10]    validation_0-logloss:0.42778
-[11]    validation_0-logloss:0.42163
-[12]    validation_0-logloss:0.41066
-[13]    validation_0-logloss:0.40575
-[14]    validation_0-logloss:0.39971
-[15]    validation_0-logloss:0.39115
-[16]    validation_0-logloss:0.38615
-[17]    validation_0-logloss:0.38129
-[18]    validation_0-logloss:0.37686
-[19]    validation_0-logloss:0.37271
-[20]    validation_0-logloss:0.36870
-[21]    validation_0-logloss:0.36354
-[22]    validation_0-logloss:0.35989
-[23]    validation_0-logloss:0.35543
-[24]    validation_0-logloss:0.35138
-[25]    validation_0-logloss:0.34777
-[26]    validation_0-logloss:0.34400
-[27]    validation_0-logloss:0.34057
-[28]    validation_0-logloss:0.33689
-[29]    validation_0-logloss:0.33363
-[30]    validation_0-logloss:0.32941
-[31]    validation_0-logloss:0.32679
-[32]    validation_0-logloss:0.32423
-[33]    validation_0-logloss:0.32174
-[34]    validation_0-logloss:0.31815
-[35]    validation_0-logloss:0.31550
-[36]    validation_0-logloss:0.31299
-[37]    validation_0-logloss:0.31033
-[38]    validation_0-logloss:0.30729
-[39]    validation_0-logloss:0.30214
-[40]    validation_0-logloss:0.29976
-[41]    validation_0-logloss:0.29689
-[42]    validation_0-logloss:0.29445
-[43]    validation_0-logloss:0.29198
-[44]    validation_0-logloss:0.28688
-[45]    validation_0-logloss:0.28447
-[46]    validation_0-logloss:0.28254
-[47]    validation_0-logloss:0.27933
-[48]    validation_0-logloss:0.27734
-[49]    validation_0-logloss:0.27512
-[50]    validation_0-logloss:0.27280
-[51]    validation_0-logloss:0.27130
-[52]    validation_0-logloss:0.26924
-[53]    validation_0-logloss:0.26517
-[54]    validation_0-logloss:0.26364
-[55]    validation_0-logloss:0.26190
-[56]    validation_0-logloss:0.26016
-[57]    validation_0-logloss:0.25785
-[58]    validation_0-logloss:0.25638
-[59]    validation_0-logloss:0.25408
-[60]    validation_0-logloss:0.25132
-[61]    validation_0-logloss:0.24955
-[62]    validation_0-logloss:0.24825
-[63]    validation_0-logloss:0.24681
-[64]    validation_0-logloss:0.24497
-[65]    validation_0-logloss:0.24383
-[66]    validation_0-logloss:0.24177
-[67]    validation_0-logloss:0.24088
-[68]    validation_0-logloss:0.23878
-[69]    validation_0-logloss:0.23680
-[70]    validation_0-logloss:0.23584
-[71]    validation_0-logloss:0.23389
-[72]    validation_0-logloss:0.23307
-[73]    validation_0-logloss:0.23113
-[74]    validation_0-logloss:0.23004
-[75]    validation_0-logloss:0.22879
-[76]    validation_0-logloss:0.22774
-[77]    validation_0-logloss:0.22632
-[78]    validation_0-logloss:0.22489
-[79]    validation_0-logloss:0.22360
-[80]    validation_0-logloss:0.22250
-[81]    validation_0-logloss:0.22155
-[82]    validation_0-logloss:0.21995
-[83]    validation_0-logloss:0.21815
-[84]    validation_0-logloss:0.21686
-[85]    validation_0-logloss:0.21535
-[86]    validation_0-logloss:0.21351
-[87]    validation_0-logloss:0.21080
-[88]    validation_0-logloss:0.20959
-[89]    validation_0-logloss:0.20751
-[90]    validation_0-logloss:0.20623
-[91]    validation_0-logloss:0.20498
-[92]    validation_0-logloss:0.20390
-[93]    validation_0-logloss:0.20230
-[94]    validation_0-logloss:0.20146
-[95]    validation_0-logloss:0.20062
-[96]    validation_0-logloss:0.19968
-[97]    validation_0-logloss:0.19882
-[98]    validation_0-logloss:0.19817
-[99]    validation_0-logloss:0.19596
-Fold 1 - Train Score: 0.9598, Test Score: 0.9407
-Fold 2 - Train Score: 0.9567, Test Score: 0.9443
-Fold 3 - Train Score: 0.9565, Test Score: 0.9470
-Fold 4 - Train Score: 0.9559, Test Score: 0.9455
-Fold 5 - Train Score: 0.9579, Test Score: 0.9433</code></pre>
+<pre><code>Epoch 9, Evaluation log: 0.43532506771199403
+Epoch 19, Evaluation log: 0.3792753911195323
+Epoch 29, Evaluation log: 0.33354706469783557
+Epoch 39, Evaluation log: 0.30271083357837053
+Epoch 49, Evaluation log: 0.279305279324064
+Epoch 59, Evaluation log: 0.25954447741247716
+Epoch 69, Evaluation log: 0.23942021674872377
+Epoch 79, Evaluation log: 0.2253209293797845
+Epoch 89, Evaluation log: 0.21018828641896833
+Epoch 99, Evaluation log: 0.19791946804738836
+Epoch 9, Evaluation log: 0.4363058236632496
+Epoch 19, Evaluation log: 0.37775733532663436
+Epoch 29, Evaluation log: 0.34021419982006773
+Epoch 39, Evaluation log: 0.3118171364949085
+Epoch 49, Evaluation log: 0.2845057213676628
+Epoch 59, Evaluation log: 0.2631917416891083
+Epoch 69, Evaluation log: 0.24602503218874336
+Epoch 79, Evaluation log: 0.2298052446101792
+Epoch 89, Evaluation log: 0.21564604027976747
+Epoch 99, Evaluation log: 0.20364683131844505
+Epoch 9, Evaluation log: 0.4298106036745012
+Epoch 19, Evaluation log: 0.3781063255192712
+Epoch 29, Evaluation log: 0.3350729692392051
+Epoch 39, Evaluation log: 0.3064516716566868
+Epoch 49, Evaluation log: 0.28155415528314187
+Epoch 59, Evaluation log: 0.26063592233066446
+Epoch 69, Evaluation log: 0.24149196673941334
+Epoch 79, Evaluation log: 0.2269377388736466
+Epoch 89, Evaluation log: 0.21128895022126382
+Epoch 99, Evaluation log: 0.19920584858197254
+Epoch 9, Evaluation log: 0.4361044309772551
+Epoch 19, Evaluation log: 0.37502499972935766
+Epoch 29, Evaluation log: 0.3394591743168421
+Epoch 39, Evaluation log: 0.3102286651122849
+Epoch 49, Evaluation log: 0.2871224889496807
+Epoch 59, Evaluation log: 0.26349290752108206
+Epoch 69, Evaluation log: 0.24620327550219373
+Epoch 79, Evaluation log: 0.23041555912198963
+Epoch 89, Evaluation log: 0.2177347152775037
+Epoch 99, Evaluation log: 0.2064689142993302
+Epoch 9, Evaluation log: 0.44166678190790115
+Epoch 19, Evaluation log: 0.3861711047636345
+Epoch 29, Evaluation log: 0.34510459983395414
+Epoch 39, Evaluation log: 0.3127195087475702
+Epoch 49, Evaluation log: 0.2859488086514175
+Epoch 59, Evaluation log: 0.2669373059461359
+Epoch 69, Evaluation log: 0.24756785157986452
+Epoch 79, Evaluation log: 0.23322149760846514
+Epoch 89, Evaluation log: 0.22021636532747652
+Epoch 99, Evaluation log: 0.2089830575933447
+
+Processing time: 0.8490030765533447 seconds
+</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="analysis" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="analysis"><span class="header-section-number">2.5</span> Analysis</h2>
-<p><strong>Data Analysis Method</strong>: <em>Describe the statistical or analytical methods that will be used to analyze the data.</em></p>
-<div id="4a844f6f" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model on the entire dataset</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the XGBClassifier without early stopping here</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> xgb.XGBClassifier(</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    tree_method<span class="op">=</span><span class="st">"hist"</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    min_child_weight<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    gamma<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    subsample<span class="op">=</span><span class="fl">0.8</span>,</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    colsample_bytree<span class="op">=</span><span class="fl">0.8</span>,</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>clf.fit(X, y)</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>num_schedules <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>test_schedules <span class="op">=</span> random_combination_with_replacement(T, N, num_schedules)</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>test_neighbors <span class="op">=</span> create_neighbors_list(test_schedules)</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>test_objectives <span class="op">=</span> [[calculate_objective(test_neighbor[<span class="dv">0</span>], s, d, q), calculate_objective(test_neighbor[<span class="dv">1</span>], s, d, q)] <span class="cf">for</span> test_neighbor <span class="kw">in</span> test_neighbors]</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>test_rankings <span class="op">=</span> [<span class="dv">0</span> <span class="cf">if</span> test_obj[<span class="dv">0</span>] <span class="op">&lt;</span> test_obj[<span class="dv">1</span>] <span class="cf">else</span> <span class="dv">1</span> <span class="cf">for</span> test_obj <span class="kw">in</span> test_objectives]</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_schedules):</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Neighbors: </span><span class="sc">{</span>test_neighbors[i]<span class="sc">}</span><span class="ss">,</span><span class="ch">\n</span><span class="ss">Objectives: </span><span class="sc">{</span>objectives[i]<span class="sc">}</span><span class="ss">, Ranking: </span><span class="sc">{</span>rankings[i]<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>input_X <span class="op">=</span> test_neighbors</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> []</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> neighbor <span class="kw">in</span> input_X:</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    X_new.append(neighbor[<span class="dv">0</span>] <span class="op">+</span> neighbor[<span class="dv">1</span>])</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict the target for new data</span></span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> clf.predict(X_new)</span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="co"># If you want to get the probability estimates</span></span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>y_pred_proba <span class="op">=</span> clf.predict_proba(X_new)</span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"rankings = </span><span class="sc">{</span>np<span class="sc">.</span>array(test_rankings)<span class="sc">}</span><span class="ss">, </span><span class="ch">\n</span><span class="ss">y_pred = </span><span class="sc">{</span>y_pred<span class="sc">}</span><span class="ss">, </span><span class="ch">\n</span><span class="ss">y_pred_proba = </span><span class="ch">\n</span><span class="sc">{</span>y_pred_proba<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Step 6</strong>: <em>To evaluate the performance of the XGBoost model, we will use Stratified K-Fold Cross-Validation with 5 splits, ensuring each fold maintains the same class distribution as the original dataset. Using StratifiedKFold(n_splits=5, shuffle=True, random_state=94), the dataset will be divided into five folds. In each iteration, the model will be trained on four folds and evaluated on the remaining fold. A custom callback, CustomCallback(period=10), will print the evaluation log every 10 epochs. The fit_and_score function will fit the model and score it on both the training and test sets, storing the results for each fold. This provides insight into the model’s performance across different subsets of the data. The overall processing time for the cross-validation will also be recorded.</em></p>
+<div id="2a9c05e6" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print results</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (est, train_score, test_score) <span class="kw">in</span> <span class="bu">enumerate</span>(results):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fold </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> - Train Score: </span><span class="sc">{</span>train_score<span class="sc">:.4f}</span><span class="ss">, Test Score: </span><span class="sc">{</span>test_score<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fold 1 - Train Score: 0.9574, Test Score: 0.9450
+Fold 2 - Train Score: 0.9604, Test Score: 0.9480
+Fold 3 - Train Score: 0.9576, Test Score: 0.9493
+Fold 4 - Train Score: 0.9539, Test Score: 0.9397
+Fold 5 - Train Score: 0.9567, Test Score: 0.9377</code></pre>
+</div>
+</div>
+<div id="2a96461a" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model on the entire dataset</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the XGBClassifier without early stopping here</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> xgb.XGBClassifier(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    tree_method<span class="op">=</span><span class="st">"hist"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    min_child_weight<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    gamma<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    subsample<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    colsample_bytree<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>clf.fit(X, y)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>num_schedules <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>test_schedules <span class="op">=</span> random_combination_with_replacement(T, N, num_schedules)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>test_neighbors <span class="op">=</span> create_neighbors_list(test_schedules)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>test_objectives <span class="op">=</span> [[calculate_objective(test_neighbor[<span class="dv">0</span>], s, d, q), calculate_objective(test_neighbor[<span class="dv">1</span>], s, d, q)] <span class="cf">for</span> test_neighbor <span class="kw">in</span> test_neighbors]</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>test_rankings <span class="op">=</span> [<span class="dv">0</span> <span class="cf">if</span> test_obj[<span class="dv">0</span>] <span class="op">&lt;</span> test_obj[<span class="dv">1</span>] <span class="cf">else</span> <span class="dv">1</span> <span class="cf">for</span> test_obj <span class="kw">in</span> test_objectives]</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>):</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Neighbors: </span><span class="sc">{</span>test_neighbors[i]<span class="sc">}</span><span class="ss">,</span><span class="ch">\n</span><span class="ss">Objectives: </span><span class="sc">{</span>test_objectives[i]<span class="sc">}</span><span class="ss">, Ranking: </span><span class="sc">{</span>test_rankings[i]<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>input_X <span class="op">=</span> test_neighbors</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> []</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> test_neighbor <span class="kw">in</span> input_X:</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    X_new.append(test_neighbor[<span class="dv">0</span>] <span class="op">+</span> test_neighbor[<span class="dv">1</span>])</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict the target for new data</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> clf.predict(X_new)</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co"># If you want to get the probability estimates</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>y_pred_proba <span class="op">=</span> clf.predict_proba(X_new)</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"test_rankings = </span><span class="sc">{</span>np<span class="sc">.</span>array(test_rankings)[:<span class="dv">6</span>]<span class="sc">}</span><span class="ss">, </span><span class="ch">\n</span><span class="ss">y_pred = </span><span class="sc">{</span>y_pred[:<span class="dv">6</span>]<span class="sc">}</span><span class="ss">, </span><span class="ch">\n</span><span class="ss">y_pred_proba = </span><span class="ch">\n</span><span class="sc">{</span>y_pred_proba[:<span class="dv">6</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Total number of combinations: 51895935
-Neighbors: ([4, 3, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [4, 3, 1, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-Objectives: [46.770431244218386, 53.202917435127475], Ranking: 0
+Neighbors: ([5, 3, 2, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 3, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0]),
+Objectives: [58.70783770350956, 56.637003831478125], Ranking: 1
 
-Neighbors: ([5, 4, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [6, 3, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]),
-Objectives: [57.869940438864106, 52.16874250971341], Ranking: 1
+Neighbors: ([7, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0], [7, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]),
+Objectives: [67.73965200246685, 61.85881494385845], Ranking: 1
 
-Neighbors: ([4, 1, 3, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], [4, 1, 3, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-Objectives: [81.93609100388147, 89.24223032411952], Ranking: 0
+Neighbors: ([5, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], [5, 3, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]),
+Objectives: [58.02616752859067, 54.20009059238473], Ranking: 1
 
-Neighbors: ([9, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], [9, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]),
-Objectives: [81.45210346194925, 93.75595263062714], Ranking: 0
+Neighbors: ([2, 5, 3, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], [2, 5, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]),
+Objectives: [54.62877129869056, 54.62827721191222], Ranking: 1
 
-Neighbors: ([4, 2, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [4, 2, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
-Objectives: [42.75077195837623, 39.65741365840285], Ranking: 1
+Neighbors: ([5, 4, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 5, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+Objectives: [61.49452639027216, 76.78856677661707], Ranking: 0
 
-Neighbors: ([8, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [8, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
-Objectives: [61.49452639027216, 67.08575383440407], Ranking: 0
+Neighbors: ([5, 2, 2, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], [5, 2, 1, 0, 1, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0]),
+Objectives: [44.74318754909474, 39.63856605440056], Ranking: 1
 
-Neighbors: ([6, 2, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0], [6, 2, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
-Objectives: [41.4098501236233, 29.891252579712937], Ranking: 1
-
-Neighbors: ([3, 6, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 6, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0]),
-Objectives: [57.3474750282602, 49.2705642604933], Ranking: 1
-
-Neighbors: ([4, 3, 2, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], [4, 3, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]),
-Objectives: [40.49523888440565, 40.4948314280812], Ranking: 1
-
-Neighbors: ([4, 4, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 4, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-Objectives: [48.12597534145, 35.343204303978005], Ranking: 1
-
-rankings = [1 0 0 0 0 1 1 1 1 0], 
-y_pred = [1 0 0 0 1 1 1 1 1 0], 
+test_rankings = [1 1 1 1 0 1], 
+y_pred = [1 1 1 1 0 1], 
 y_pred_proba = 
-[[0.23344398 0.766556  ]
- [0.7096498  0.29035017]
- [0.6868384  0.3131616 ]
- [0.77367604 0.22632399]
- [0.20387214 0.79612786]
- [0.19631404 0.80368596]
- [0.11089581 0.8891042 ]
- [0.034863   0.965137  ]
- [0.11826545 0.88173455]
- [0.93600726 0.06399276]]</code></pre>
+[[0.0362469  0.9637531 ]
+ [0.0719552  0.9280448 ]
+ [0.24417627 0.75582373]
+ [0.06226081 0.9377392 ]
+ [0.76849866 0.23150133]
+ [0.13521296 0.86478704]]</code></pre>
 </div>
 </div>
-<section id="data-processing" class="level3" data-number="2.5.1">
-<h3 data-number="2.5.1" class="anchored" data-anchor-id="data-processing"><span class="header-section-number">2.5.1</span> Data Processing</h3>
-<p><strong>Data Processing</strong>: <em>Describe how the raw data will be processed and prepared for analysis.</em></p>
+<div id="014076e5" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_entropies(y_pred_proba: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Calculate the entropy for each array of probabilities.</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">    y_pred_proba (np.ndarray): Array of shape (n_samples, n_classes) with predicted probabilities for each class.</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">    np.ndarray: Array of entropies for each sample.</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure probabilities are in numpy array</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    y_pred_proba <span class="op">=</span> np.array(y_pred_proba)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate entropy for each array of probabilities</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    entropies <span class="op">=</span> <span class="op">-</span>np.<span class="bu">sum</span>(y_pred_proba <span class="op">*</span> np.log2(y_pred_proba), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> entropies</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>errors <span class="op">=</span> np.<span class="bu">abs</span>(y_pred <span class="op">-</span> np.array(test_rankings))</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>entropies: np.ndarray <span class="op">=</span> calculate_entropies(y_pred_proba)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">"Entropy"</span>: entropies, <span class="st">"Error"</span>: errors}).sort_values(by<span class="op">=</span><span class="st">"Entropy"</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Cummulative error'</span>] <span class="op">=</span> df[<span class="st">'Error'</span>].cumsum()<span class="op">/</span><span class="bu">len</span>(errors)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>df.head()</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="co"># fig = px.scatter(df, x="Entropy", y="Cummulative error", title=f"Error vs Entropy&lt;/br&gt;&lt;/br&gt;&lt;sub&gt;n={num_schedules}&lt;/sub&gt;")</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Create traces</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(x<span class="op">=</span>df[<span class="st">"Entropy"</span>], y<span class="op">=</span>df[<span class="st">"Error"</span>],</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>                    mode<span class="op">=</span><span class="st">"markers"</span>,</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>                    name<span class="op">=</span><span class="st">"Error"</span>))</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(x<span class="op">=</span>df[<span class="st">"Entropy"</span>], y<span class="op">=</span>df[<span class="st">"Cummulative error"</span>],</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>                    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>                    name<span class="op">=</span><span class="st">"Cumm. error"</span>))</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>fig.update_layout(title<span class="op">=</span><span class="ss">f"Error vs Entropy&lt;/br&gt;&lt;/br&gt;&lt;sub&gt;n=</span><span class="sc">{</span>num_schedules<span class="sc">}</span><span class="ss">&lt;/sub&gt;"</span>,</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>                   xaxis_title<span class="op">=</span><span class="st">"Entropy"</span>,</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>                   yaxis_title<span class="op">=</span><span class="st">"Error"</span>)</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>                            <div id="d1cf50f5-d4bd-4095-a981-c88d173f4510" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("d1cf50f5-d4bd-4095-a981-c88d173f4510")) {                    Plotly.newPlot(                        "d1cf50f5-d4bd-4095-a981-c88d173f4510",                        [{"mode":"markers","name":"Error","x":[0.03549423813819885,0.03860653191804886,0.03866549953818321,0.03874801844358444,0.04040927439928055,0.040873508900403976,0.0432448536157608,0.04438558593392372,0.044696006923913956,0.04494299367070198,0.04532269015908241,0.04700155556201935,0.04703858494758606,0.04713384434580803,0.0471428707242012,0.04745901748538017,0.04751218482851982,0.04765765741467476,0.048708975315093994,0.050449833273887634,0.051794275641441345,0.05194084718823433,0.05391590669751167,0.05459604412317276,0.0551423579454422,0.055807169526815414,0.05591345578432083,0.056059129536151886,0.05614146962761879,0.05693131312727928,0.05810084939002991,0.05854219198226929,0.060156457126140594,0.06086786836385727,0.0620969720184803,0.06233827397227287,0.06301023811101913,0.06301360577344894,0.06316269189119339,0.06449468433856964,0.06486968696117401,0.06518024206161499,0.06537149101495743,0.06544411182403564,0.06551045924425125,0.06622497737407684,0.06659834086894989,0.06771031767129898,0.0677276998758316,0.06916441023349762,0.06945807486772537,0.0697641521692276,0.06986021995544434,0.07007275521755219,0.07044818997383118,0.07101038843393326,0.07117588073015213,0.07221073657274246,0.07233687490224838,0.07368059456348419,0.073757104575634,0.07411225885152817,0.07450088113546371,0.07457555830478668,0.07484624534845352,0.07506632059812546,0.07630861550569534,0.07656685262918472,0.07671631872653961,0.07699821889400482,0.07781154662370682,0.07830443978309631,0.07859038561582565,0.07872569561004639,0.07904224842786789,0.07927267998456955,0.0798368901014328,0.08054245263338089,0.0822303369641304,0.08251768350601196,0.08274313062429428,0.08290170133113861,0.08304450660943985,0.08306529372930527,0.08380097150802612,0.08475731313228607,0.08540414273738861,0.08773916959762573,0.08840344846248627,0.0885368287563324,0.088706374168396,0.08876068890094757,0.08884887397289276,0.08914368599653244,0.08970370143651962,0.09005106985569,0.09031641483306885,0.09055589139461517,0.09129008650779724,0.09282278269529343,0.09331842511892319,0.09337995946407318,0.09343425184488297,0.09504513442516327,0.09564915299415588,0.09607584774494171,0.09610899537801743,0.09627921134233475,0.09853506088256836,0.09894806891679764,0.0993303656578064,0.09986910969018936,0.10013352334499359,0.10019196569919586,0.1010640487074852,0.10110972076654434,0.10148222744464874,0.10155600309371948,0.1018684059381485,0.10244874656200409,0.10249756276607513,0.10278326272964478,0.10336467623710632,0.10346277058124542,0.10463970899581909,0.10472753643989563,0.10482195764780045,0.105049267411232,0.10514140129089355,0.10579738765954971,0.10637684166431427,0.10662217438220978,0.10700831562280655,0.10741846263408661,0.10754718631505966,0.10971976071596146,0.11049017310142517,0.11066155135631561,0.11090439558029175,0.11091558635234833,0.11094015836715698,0.11103802919387817,0.11121349036693573,0.11197611689567566,0.11227965354919434,0.11246100068092346,0.11293592303991318,0.11328498274087906,0.11381262540817261,0.1142246201634407,0.11637435108423233,0.11654308438301086,0.11836154013872147,0.12022539973258972,0.12069779634475708,0.12089138478040695,0.12279398739337921,0.12388960272073746,0.12389658391475677,0.12400901317596436,0.12514270842075348,0.12565480172634125,0.12572884559631348,0.12657368183135986,0.12665621936321259,0.1267692744731903,0.1268898993730545,0.12807630002498627,0.12822693586349487,0.12829050421714783,0.12829361855983734,0.12847179174423218,0.1294376701116562,0.13022735714912415,0.1308593899011612,0.13221219182014465,0.13273732364177704,0.1338285207748413,0.13893651962280273,0.13910749554634094,0.13919800519943237,0.13966907560825348,0.13989047706127167,0.14089961349964142,0.14136579632759094,0.1417020559310913,0.14226758480072021,0.1426398754119873,0.1430158019065857,0.1438872069120407,0.14408083260059357,0.1454460620880127,0.14575332403182983,0.14725369215011597,0.1472952961921692,0.14779126644134521,0.14817959070205688,0.14895161986351013,0.1497780978679657,0.14995208382606506,0.15072132647037506,0.1513960212469101,0.151450976729393,0.15193480253219604,0.15499942004680634,0.15554910898208618,0.1563408523797989,0.15635216236114502,0.15753184258937836,0.15767411887645721,0.1590617299079895,0.15965664386749268,0.16005346179008484,0.1610923707485199,0.16139006614685059,0.16198322176933289,0.1620982587337494,0.16350318491458893,0.16364267468452454,0.16404658555984497,0.16496418416500092,0.1651092767715454,0.16524100303649902,0.16633103787899017,0.166461780667305,0.1669878363609314,0.16753950715065002,0.16772927343845367,0.1683371514081955,0.1688743531703949,0.16943798959255219,0.1706269383430481,0.17108789086341858,0.17285452783107758,0.1729600578546524,0.17317511141300201,0.1732521802186966,0.17377762496471405,0.1740022897720337,0.17400634288787842,0.1740860790014267,0.17451071739196777,0.17482711374759674,0.17618729174137115,0.1768386960029602,0.17804498970508575,0.17811448872089386,0.1781666874885559,0.178533136844635,0.18014666438102722,0.18067419528961182,0.18151074647903442,0.18157853186130524,0.181973397731781,0.1840488463640213,0.1855771392583847,0.18608520925045013,0.18609890341758728,0.18613173067569733,0.18721598386764526,0.18797524273395538,0.18829545378684998,0.1895863115787506,0.19048990309238434,0.19055919349193573,0.19059503078460693,0.19160990417003632,0.19391262531280518,0.19435223937034607,0.19560356438159943,0.19618889689445496,0.1966075301170349,0.19702816009521484,0.1984671950340271,0.199365496635437,0.20392432808876038,0.20447507500648499,0.20492129027843475,0.20627455413341522,0.20682308077812195,0.20767615735530853,0.2078118920326233,0.209148108959198,0.20997217297554016,0.209990456700325,0.21153143048286438,0.21281872689723969,0.21375027298927307,0.21465228497982025,0.21609491109848022,0.21700499951839447,0.21730831265449524,0.21869643032550812,0.22017771005630493,0.22188130021095276,0.2223728746175766,0.22417068481445312,0.22423112392425537,0.22441719472408295,0.22481141984462738,0.2250426709651947,0.2257150560617447,0.22699296474456787,0.22782790660858154,0.22786802053451538,0.22869043052196503,0.22874027490615845,0.23346303403377533,0.23434476554393768,0.23453961312770844,0.2348521202802658,0.23656444251537323,0.23657795786857605,0.23681426048278809,0.23716133832931519,0.2379160076379776,0.23838761448860168,0.2397899627685547,0.24113154411315918,0.2416275441646576,0.2417265772819519,0.2427269071340561,0.24613839387893677,0.2466389536857605,0.24689650535583496,0.24715203046798706,0.24777457118034363,0.24865290522575378,0.24902458488941193,0.24902567267417908,0.2491263747215271,0.2491898238658905,0.2514362633228302,0.2536499798297882,0.25506913661956787,0.25641676783561707,0.25798726081848145,0.25882795453071594,0.25909438729286194,0.259164422750473,0.2594839632511139,0.2610669732093811,0.2621724307537079,0.26343244314193726,0.26442191004753113,0.2661502957344055,0.26691582798957825,0.26760509610176086,0.26777446269989014,0.2683115601539612,0.2706625163555145,0.27130576968193054,0.27169686555862427,0.2749100923538208,0.27623534202575684,0.2764882445335388,0.27656289935112,0.2787558436393738,0.27966544032096863,0.28023263812065125,0.28051427006721497,0.2812114953994751,0.2817545235157013,0.2820601463317871,0.2828451991081238,0.28303033113479614,0.28463977575302124,0.28612881898880005,0.28716370463371277,0.2877470552921295,0.28927871584892273,0.2892986536026001,0.28944122791290283,0.28971120715141296,0.2902829945087433,0.2926178276538849,0.29347991943359375,0.2948404848575592,0.2958364486694336,0.2958683967590332,0.2961297631263733,0.29859256744384766,0.30143630504608154,0.30249661207199097,0.30291303992271423,0.3035954236984253,0.3036839962005615,0.30538856983184814,0.3058532476425171,0.3060535192489624,0.30775484442710876,0.3093664050102234,0.31002330780029297,0.310531884431839,0.3106310963630676,0.31210601329803467,0.3135676383972168,0.3158194422721863,0.3158804476261139,0.3219901919364929,0.32238730788230896,0.3269270062446594,0.3270643353462219,0.32715004682540894,0.32992950081825256,0.3309648036956787,0.3312647044658661,0.3325050473213196,0.3327018916606903,0.335866779088974,0.33631613850593567,0.3363548517227173,0.33671343326568604,0.337169885635376,0.337286114692688,0.339860737323761,0.3486078679561615,0.34887099266052246,0.3514508306980133,0.35182541608810425,0.35271358489990234,0.3567451238632202,0.35736167430877686,0.3581336736679077,0.3620518147945404,0.36232370138168335,0.36253708600997925,0.36267417669296265,0.363742470741272,0.3642774820327759,0.36480891704559326,0.36643099784851074,0.3677668869495392,0.3681289553642273,0.3714732229709625,0.371803879737854,0.3723824918270111,0.3730228543281555,0.373178094625473,0.37403637170791626,0.3745995759963989,0.3753998279571533,0.37549975514411926,0.3762739300727844,0.3770606815814972,0.3782690763473511,0.3785492777824402,0.3785560727119446,0.37917011976242065,0.3792622685432434,0.38025233149528503,0.38060295581817627,0.38153883814811707,0.38271600008010864,0.3863581418991089,0.38689887523651123,0.38786113262176514,0.38850080966949463,0.38944005966186523,0.3917298913002014,0.39213502407073975,0.3930567800998688,0.39767372608184814,0.3990310728549957,0.3990752100944519,0.39920371770858765,0.39952605962753296,0.399793416261673,0.39979615807533264,0.39990514516830444,0.4029788076877594,0.40304258465766907,0.40436774492263794,0.4046883285045624,0.4090651273727417,0.4091697931289673,0.41093170642852783,0.41354554891586304,0.41432425379753113,0.4174131751060486,0.41844940185546875,0.4193252623081207,0.4198589622974396,0.4220900535583496,0.422133207321167,0.42233383655548096,0.4231923818588257,0.4258258640766144,0.4279453456401825,0.43018755316734314,0.4319038391113281,0.4326522946357727,0.4331490695476532,0.4353119730949402,0.43534326553344727,0.43653059005737305,0.4408857226371765,0.44133901596069336,0.44177889823913574,0.4418434202671051,0.44281286001205444,0.44377192854881287,0.4445863962173462,0.4451853632926941,0.4455776810646057,0.4499324560165405,0.45050787925720215,0.4529269337654114,0.4575513005256653,0.45999962091445923,0.4602639079093933,0.46461355686187744,0.4658557176589966,0.4691264033317566,0.46989965438842773,0.4733317792415619,0.4736180305480957,0.47577136754989624,0.47730588912963867,0.47746437788009644,0.4779108166694641,0.47814100980758667,0.47846582531929016,0.4787849187850952,0.4800896942615509,0.4804697632789612,0.4811307191848755,0.48179006576538086,0.4819503724575043,0.4821050763130188,0.4824367165565491,0.48357701301574707,0.48623931407928467,0.4879453778266907,0.4888346195220947,0.4901776909828186,0.49131137132644653,0.49349987506866455,0.4984230697154999,0.5042390823364258,0.5067383646965027,0.5086115598678589,0.5087708830833435,0.509239137172699,0.5093263983726501,0.5098254680633545,0.5105082988739014,0.5117462277412415,0.5131052136421204,0.5149593949317932,0.5184734463691711,0.520233690738678,0.5203278064727783,0.5209420919418335,0.5219385623931885,0.5222011208534241,0.5235049724578857,0.523995578289032,0.5243301391601562,0.5244215130805969,0.5253632068634033,0.5305367708206177,0.532177209854126,0.5323519706726074,0.5324908494949341,0.5326476693153381,0.5332571864128113,0.5364406108856201,0.5426343679428101,0.542946994304657,0.5432849526405334,0.5434372425079346,0.5443499088287354,0.5445529222488403,0.5464146137237549,0.5489853620529175,0.5497000813484192,0.550017774105072,0.5529474020004272,0.5550862550735474,0.5554726719856262,0.5554841160774231,0.5570889115333557,0.5572604537010193,0.5575369000434875,0.5603586435317993,0.5605491995811462,0.5629849433898926,0.5643165111541748,0.5647651553153992,0.5663542747497559,0.5668239593505859,0.5696604251861572,0.5715633630752563,0.5719088912010193,0.5720726251602173,0.5742185115814209,0.5742435455322266,0.5768352150917053,0.5782297253608704,0.5810376405715942,0.5822287797927856,0.582283079624176,0.5830004811286926,0.5868117213249207,0.5877195000648499,0.5889458656311035,0.589844822883606,0.5924261212348938,0.5953395366668701,0.5984076857566833,0.6028342247009277,0.6041223406791687,0.6111108064651489,0.6118029952049255,0.6126541495323181,0.6139521598815918,0.6178883910179138,0.6182713508605957,0.6182727813720703,0.6200067400932312,0.6200140714645386,0.6216925382614136,0.6223995685577393,0.623417854309082,0.623977541923523,0.6241119503974915,0.6245676279067993,0.6274019479751587,0.630865752696991,0.6365193128585815,0.6366696953773499,0.6406909823417664,0.6416944265365601,0.6419011950492859,0.6424008011817932,0.6433547735214233,0.6440331935882568,0.6452882885932922,0.6454277634620667,0.6469007134437561,0.6476929783821106,0.6481356024742126,0.648483157157898,0.6490445733070374,0.6493072509765625,0.6507827043533325,0.6514852046966553,0.6526040434837341,0.6528409123420715,0.6532555818557739,0.6533152461051941,0.6548355221748352,0.6566414833068848,0.6569228172302246,0.6597075462341309,0.6597933769226074,0.66053307056427,0.662818193435669,0.6645030379295349,0.6650025248527527,0.6667523980140686,0.670741617679596,0.6740658283233643,0.6754810214042664,0.6764476299285889,0.6771044135093689,0.677831768989563,0.6800099015235901,0.6800233721733093,0.684235692024231,0.6848477721214294,0.6878073811531067,0.6883782744407654,0.6897179484367371,0.6902015209197998,0.6906753778457642,0.6911615133285522,0.6943316459655762,0.6983527541160583,0.6990059018135071,0.7010010480880737,0.7014632821083069,0.7018042802810669,0.7020258903503418,0.7038843035697937,0.7039924263954163,0.7058133482933044,0.7110582590103149,0.7113063335418701,0.7113590240478516,0.7118397951126099,0.7139204740524292,0.7154325842857361,0.7163186073303223,0.7171698808670044,0.7177470922470093,0.7179340124130249,0.7190096378326416,0.7198450565338135,0.7202413082122803,0.7206712365150452,0.7209644317626953,0.72249835729599,0.7230923771858215,0.7239633202552795,0.7241261005401611,0.7250776290893555,0.7254620790481567,0.7273878455162048,0.7282242774963379,0.7289401888847351,0.7312023639678955,0.7333714962005615,0.733553409576416,0.7411848306655884,0.7449389696121216,0.7455021142959595,0.7462630867958069,0.7474546432495117,0.7506511211395264,0.7511365413665771,0.7511786222457886,0.7515571117401123,0.7529335021972656,0.7529391050338745,0.7529391050338745,0.7533080577850342,0.7541767358779907,0.7558790445327759,0.7559453845024109,0.7583986520767212,0.7604409456253052,0.7604676485061646,0.7608901262283325,0.7620447874069214,0.7624882459640503,0.7625576853752136,0.7632817029953003,0.7639009952545166,0.7645527124404907,0.7655971050262451,0.7661651372909546,0.766394853591919,0.7668089866638184,0.7689514756202698,0.7699697017669678,0.7708411812782288,0.772925853729248,0.7741801738739014,0.7746495008468628,0.7791800498962402,0.7797703742980957,0.7801823019981384,0.7806192636489868,0.7832438349723816,0.7845076322555542,0.7872123718261719,0.787987470626831,0.7884879112243652,0.7902721166610718,0.7918882369995117,0.79234778881073,0.7928459644317627,0.7933887243270874,0.7945318222045898,0.7948535084724426,0.7952454090118408,0.797844648361206,0.7993768453598022,0.8005138635635376,0.8014919757843018,0.8019165992736816,0.8023881912231445,0.8024529218673706,0.803341269493103,0.8066664934158325,0.8070749044418335,0.8076490163803101,0.8081787824630737,0.8108901977539062,0.8117119073867798,0.8139298558235168,0.8140742778778076,0.8165742754936218,0.8176214694976807,0.8179095983505249,0.8181548118591309,0.818877100944519,0.8211462497711182,0.82124924659729,0.8217859268188477,0.8227737545967102,0.8248634338378906,0.8259060382843018,0.8260535001754761,0.8270341157913208,0.8284432888031006,0.8297426104545593,0.8305791616439819,0.8311486840248108,0.832273542881012,0.833757758140564,0.8357501029968262,0.8363352417945862,0.8379297256469727,0.8380826115608215,0.838615894317627,0.8393241763114929,0.8401461839675903,0.8408654928207397,0.8423869609832764,0.8437674045562744,0.8462803363800049,0.8483651876449585,0.8486346006393433,0.8548471927642822,0.8554697036743164,0.8558909296989441,0.8564541339874268,0.8568710088729858,0.8620003461837769,0.8633871674537659,0.8644938468933105,0.8703421950340271,0.8711282014846802,0.8715969324111938,0.8728377819061279,0.873792827129364,0.8746874928474426,0.87885981798172,0.8790625333786011,0.87920743227005,0.881462812423706,0.881591796875,0.8830654621124268,0.8842131495475769,0.884576678276062,0.8851110935211182,0.8867844343185425,0.8877652287483215,0.8880334496498108,0.8892194628715515,0.8903692960739136,0.8909308910369873,0.8919689655303955,0.8925434350967407,0.8927512168884277,0.8942523002624512,0.8984723687171936,0.8989555835723877,0.8994954824447632,0.9008747935295105,0.9014211297035217,0.9041773080825806,0.9054539203643799,0.9068485498428345,0.9072251319885254,0.9073804020881653,0.9074313640594482,0.9089114665985107,0.9098615646362305,0.9103849530220032,0.9109780788421631,0.9146741032600403,0.9171189069747925,0.9191155433654785,0.9201734066009521,0.9212862849235535,0.9229089617729187,0.923182487487793,0.9237321615219116,0.9240671396255493,0.9245563745498657,0.9246213436126709,0.9250949621200562,0.9258836507797241,0.9286842346191406,0.9303098917007446,0.9306268692016602,0.9307419061660767,0.9313960671424866,0.9321702718734741,0.9322150945663452,0.9330428242683411,0.935742974281311,0.9372965693473816,0.9383747577667236,0.9393766522407532,0.9399559497833252,0.9403291940689087,0.9412922859191895,0.9417240619659424,0.9431906342506409,0.9436475038528442,0.944679856300354,0.9448498487472534,0.9483818411827087,0.9496554136276245,0.950259804725647,0.950557291507721,0.9506085515022278,0.9506270885467529,0.9521498680114746,0.9522398710250854,0.9526572227478027,0.9537173509597778,0.9545262455940247,0.9573879241943359,0.959012508392334,0.9595596790313721,0.9603484869003296,0.9604309797286987,0.9618088006973267,0.9632335901260376,0.9635190963745117,0.9642667174339294,0.9643266201019287,0.9645566940307617,0.9651563167572021,0.9656018614768982,0.9665971994400024,0.9667079448699951,0.9669584035873413,0.9671765565872192,0.9682159423828125,0.9697221517562866,0.9713364839553833,0.9716358184814453,0.9719429016113281,0.9731763601303101,0.9735773801803589,0.974094033241272,0.9753994941711426,0.9762117862701416,0.9768935441970825,0.9769271612167358,0.9789586663246155,0.978966236114502,0.9793431758880615,0.9803658723831177,0.9808410406112671,0.9813164472579956,0.9822033047676086,0.983484148979187,0.9835487604141235,0.9837163686752319,0.9852878451347351,0.9854940176010132,0.985609769821167,0.9856570959091187,0.9858170747756958,0.9859641790390015,0.9872147440910339,0.9874557256698608,0.9885318875312805,0.9885916113853455,0.9899885058403015,0.9908826351165771,0.9915524125099182,0.9917812943458557,0.9923660755157471,0.9929136633872986,0.9929718971252441,0.9932936429977417,0.9934707880020142,0.9936165809631348,0.9936304092407227,0.9941770434379578,0.9944541454315186,0.9945452213287354,0.9956368207931519,0.995667040348053,0.9958733320236206,0.9959583282470703,0.9962193965911865,0.9965120553970337,0.996886134147644,0.997692883014679,0.9977151155471802,0.9978039860725403,0.9978833198547363,0.9979290962219238,0.9982713460922241,0.9986168146133423,0.9988553524017334,0.9994779825210571,0.9994823932647705,0.9997178316116333,0.9997274875640869,0.9997422695159912,0.9997553825378418,0.9998306035995483,0.999903678894043,0.9999680519104004,0.9999760985374451,0.9999812841415405,0.9999821186065674,0.9999939203262329,0.9999971389770508],"y":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,1,1,0,0,0,0,0,0,0,1,1,0,0,1,1,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,0,0,0,0,0,0,1,1,0,0,1,1,0,1,1,0,0,0,1,1,1,0,1,1,1,0,1,0,0,0,0,0,0,0,1,1,0,0],"type":"scatter"},{"mode":"lines","name":"Cumm. error","x":[0.03549423813819885,0.03860653191804886,0.03866549953818321,0.03874801844358444,0.04040927439928055,0.040873508900403976,0.0432448536157608,0.04438558593392372,0.044696006923913956,0.04494299367070198,0.04532269015908241,0.04700155556201935,0.04703858494758606,0.04713384434580803,0.0471428707242012,0.04745901748538017,0.04751218482851982,0.04765765741467476,0.048708975315093994,0.050449833273887634,0.051794275641441345,0.05194084718823433,0.05391590669751167,0.05459604412317276,0.0551423579454422,0.055807169526815414,0.05591345578432083,0.056059129536151886,0.05614146962761879,0.05693131312727928,0.05810084939002991,0.05854219198226929,0.060156457126140594,0.06086786836385727,0.0620969720184803,0.06233827397227287,0.06301023811101913,0.06301360577344894,0.06316269189119339,0.06449468433856964,0.06486968696117401,0.06518024206161499,0.06537149101495743,0.06544411182403564,0.06551045924425125,0.06622497737407684,0.06659834086894989,0.06771031767129898,0.0677276998758316,0.06916441023349762,0.06945807486772537,0.0697641521692276,0.06986021995544434,0.07007275521755219,0.07044818997383118,0.07101038843393326,0.07117588073015213,0.07221073657274246,0.07233687490224838,0.07368059456348419,0.073757104575634,0.07411225885152817,0.07450088113546371,0.07457555830478668,0.07484624534845352,0.07506632059812546,0.07630861550569534,0.07656685262918472,0.07671631872653961,0.07699821889400482,0.07781154662370682,0.07830443978309631,0.07859038561582565,0.07872569561004639,0.07904224842786789,0.07927267998456955,0.0798368901014328,0.08054245263338089,0.0822303369641304,0.08251768350601196,0.08274313062429428,0.08290170133113861,0.08304450660943985,0.08306529372930527,0.08380097150802612,0.08475731313228607,0.08540414273738861,0.08773916959762573,0.08840344846248627,0.0885368287563324,0.088706374168396,0.08876068890094757,0.08884887397289276,0.08914368599653244,0.08970370143651962,0.09005106985569,0.09031641483306885,0.09055589139461517,0.09129008650779724,0.09282278269529343,0.09331842511892319,0.09337995946407318,0.09343425184488297,0.09504513442516327,0.09564915299415588,0.09607584774494171,0.09610899537801743,0.09627921134233475,0.09853506088256836,0.09894806891679764,0.0993303656578064,0.09986910969018936,0.10013352334499359,0.10019196569919586,0.1010640487074852,0.10110972076654434,0.10148222744464874,0.10155600309371948,0.1018684059381485,0.10244874656200409,0.10249756276607513,0.10278326272964478,0.10336467623710632,0.10346277058124542,0.10463970899581909,0.10472753643989563,0.10482195764780045,0.105049267411232,0.10514140129089355,0.10579738765954971,0.10637684166431427,0.10662217438220978,0.10700831562280655,0.10741846263408661,0.10754718631505966,0.10971976071596146,0.11049017310142517,0.11066155135631561,0.11090439558029175,0.11091558635234833,0.11094015836715698,0.11103802919387817,0.11121349036693573,0.11197611689567566,0.11227965354919434,0.11246100068092346,0.11293592303991318,0.11328498274087906,0.11381262540817261,0.1142246201634407,0.11637435108423233,0.11654308438301086,0.11836154013872147,0.12022539973258972,0.12069779634475708,0.12089138478040695,0.12279398739337921,0.12388960272073746,0.12389658391475677,0.12400901317596436,0.12514270842075348,0.12565480172634125,0.12572884559631348,0.12657368183135986,0.12665621936321259,0.1267692744731903,0.1268898993730545,0.12807630002498627,0.12822693586349487,0.12829050421714783,0.12829361855983734,0.12847179174423218,0.1294376701116562,0.13022735714912415,0.1308593899011612,0.13221219182014465,0.13273732364177704,0.1338285207748413,0.13893651962280273,0.13910749554634094,0.13919800519943237,0.13966907560825348,0.13989047706127167,0.14089961349964142,0.14136579632759094,0.1417020559310913,0.14226758480072021,0.1426398754119873,0.1430158019065857,0.1438872069120407,0.14408083260059357,0.1454460620880127,0.14575332403182983,0.14725369215011597,0.1472952961921692,0.14779126644134521,0.14817959070205688,0.14895161986351013,0.1497780978679657,0.14995208382606506,0.15072132647037506,0.1513960212469101,0.151450976729393,0.15193480253219604,0.15499942004680634,0.15554910898208618,0.1563408523797989,0.15635216236114502,0.15753184258937836,0.15767411887645721,0.1590617299079895,0.15965664386749268,0.16005346179008484,0.1610923707485199,0.16139006614685059,0.16198322176933289,0.1620982587337494,0.16350318491458893,0.16364267468452454,0.16404658555984497,0.16496418416500092,0.1651092767715454,0.16524100303649902,0.16633103787899017,0.166461780667305,0.1669878363609314,0.16753950715065002,0.16772927343845367,0.1683371514081955,0.1688743531703949,0.16943798959255219,0.1706269383430481,0.17108789086341858,0.17285452783107758,0.1729600578546524,0.17317511141300201,0.1732521802186966,0.17377762496471405,0.1740022897720337,0.17400634288787842,0.1740860790014267,0.17451071739196777,0.17482711374759674,0.17618729174137115,0.1768386960029602,0.17804498970508575,0.17811448872089386,0.1781666874885559,0.178533136844635,0.18014666438102722,0.18067419528961182,0.18151074647903442,0.18157853186130524,0.181973397731781,0.1840488463640213,0.1855771392583847,0.18608520925045013,0.18609890341758728,0.18613173067569733,0.18721598386764526,0.18797524273395538,0.18829545378684998,0.1895863115787506,0.19048990309238434,0.19055919349193573,0.19059503078460693,0.19160990417003632,0.19391262531280518,0.19435223937034607,0.19560356438159943,0.19618889689445496,0.1966075301170349,0.19702816009521484,0.1984671950340271,0.199365496635437,0.20392432808876038,0.20447507500648499,0.20492129027843475,0.20627455413341522,0.20682308077812195,0.20767615735530853,0.2078118920326233,0.209148108959198,0.20997217297554016,0.209990456700325,0.21153143048286438,0.21281872689723969,0.21375027298927307,0.21465228497982025,0.21609491109848022,0.21700499951839447,0.21730831265449524,0.21869643032550812,0.22017771005630493,0.22188130021095276,0.2223728746175766,0.22417068481445312,0.22423112392425537,0.22441719472408295,0.22481141984462738,0.2250426709651947,0.2257150560617447,0.22699296474456787,0.22782790660858154,0.22786802053451538,0.22869043052196503,0.22874027490615845,0.23346303403377533,0.23434476554393768,0.23453961312770844,0.2348521202802658,0.23656444251537323,0.23657795786857605,0.23681426048278809,0.23716133832931519,0.2379160076379776,0.23838761448860168,0.2397899627685547,0.24113154411315918,0.2416275441646576,0.2417265772819519,0.2427269071340561,0.24613839387893677,0.2466389536857605,0.24689650535583496,0.24715203046798706,0.24777457118034363,0.24865290522575378,0.24902458488941193,0.24902567267417908,0.2491263747215271,0.2491898238658905,0.2514362633228302,0.2536499798297882,0.25506913661956787,0.25641676783561707,0.25798726081848145,0.25882795453071594,0.25909438729286194,0.259164422750473,0.2594839632511139,0.2610669732093811,0.2621724307537079,0.26343244314193726,0.26442191004753113,0.2661502957344055,0.26691582798957825,0.26760509610176086,0.26777446269989014,0.2683115601539612,0.2706625163555145,0.27130576968193054,0.27169686555862427,0.2749100923538208,0.27623534202575684,0.2764882445335388,0.27656289935112,0.2787558436393738,0.27966544032096863,0.28023263812065125,0.28051427006721497,0.2812114953994751,0.2817545235157013,0.2820601463317871,0.2828451991081238,0.28303033113479614,0.28463977575302124,0.28612881898880005,0.28716370463371277,0.2877470552921295,0.28927871584892273,0.2892986536026001,0.28944122791290283,0.28971120715141296,0.2902829945087433,0.2926178276538849,0.29347991943359375,0.2948404848575592,0.2958364486694336,0.2958683967590332,0.2961297631263733,0.29859256744384766,0.30143630504608154,0.30249661207199097,0.30291303992271423,0.3035954236984253,0.3036839962005615,0.30538856983184814,0.3058532476425171,0.3060535192489624,0.30775484442710876,0.3093664050102234,0.31002330780029297,0.310531884431839,0.3106310963630676,0.31210601329803467,0.3135676383972168,0.3158194422721863,0.3158804476261139,0.3219901919364929,0.32238730788230896,0.3269270062446594,0.3270643353462219,0.32715004682540894,0.32992950081825256,0.3309648036956787,0.3312647044658661,0.3325050473213196,0.3327018916606903,0.335866779088974,0.33631613850593567,0.3363548517227173,0.33671343326568604,0.337169885635376,0.337286114692688,0.339860737323761,0.3486078679561615,0.34887099266052246,0.3514508306980133,0.35182541608810425,0.35271358489990234,0.3567451238632202,0.35736167430877686,0.3581336736679077,0.3620518147945404,0.36232370138168335,0.36253708600997925,0.36267417669296265,0.363742470741272,0.3642774820327759,0.36480891704559326,0.36643099784851074,0.3677668869495392,0.3681289553642273,0.3714732229709625,0.371803879737854,0.3723824918270111,0.3730228543281555,0.373178094625473,0.37403637170791626,0.3745995759963989,0.3753998279571533,0.37549975514411926,0.3762739300727844,0.3770606815814972,0.3782690763473511,0.3785492777824402,0.3785560727119446,0.37917011976242065,0.3792622685432434,0.38025233149528503,0.38060295581817627,0.38153883814811707,0.38271600008010864,0.3863581418991089,0.38689887523651123,0.38786113262176514,0.38850080966949463,0.38944005966186523,0.3917298913002014,0.39213502407073975,0.3930567800998688,0.39767372608184814,0.3990310728549957,0.3990752100944519,0.39920371770858765,0.39952605962753296,0.399793416261673,0.39979615807533264,0.39990514516830444,0.4029788076877594,0.40304258465766907,0.40436774492263794,0.4046883285045624,0.4090651273727417,0.4091697931289673,0.41093170642852783,0.41354554891586304,0.41432425379753113,0.4174131751060486,0.41844940185546875,0.4193252623081207,0.4198589622974396,0.4220900535583496,0.422133207321167,0.42233383655548096,0.4231923818588257,0.4258258640766144,0.4279453456401825,0.43018755316734314,0.4319038391113281,0.4326522946357727,0.4331490695476532,0.4353119730949402,0.43534326553344727,0.43653059005737305,0.4408857226371765,0.44133901596069336,0.44177889823913574,0.4418434202671051,0.44281286001205444,0.44377192854881287,0.4445863962173462,0.4451853632926941,0.4455776810646057,0.4499324560165405,0.45050787925720215,0.4529269337654114,0.4575513005256653,0.45999962091445923,0.4602639079093933,0.46461355686187744,0.4658557176589966,0.4691264033317566,0.46989965438842773,0.4733317792415619,0.4736180305480957,0.47577136754989624,0.47730588912963867,0.47746437788009644,0.4779108166694641,0.47814100980758667,0.47846582531929016,0.4787849187850952,0.4800896942615509,0.4804697632789612,0.4811307191848755,0.48179006576538086,0.4819503724575043,0.4821050763130188,0.4824367165565491,0.48357701301574707,0.48623931407928467,0.4879453778266907,0.4888346195220947,0.4901776909828186,0.49131137132644653,0.49349987506866455,0.4984230697154999,0.5042390823364258,0.5067383646965027,0.5086115598678589,0.5087708830833435,0.509239137172699,0.5093263983726501,0.5098254680633545,0.5105082988739014,0.5117462277412415,0.5131052136421204,0.5149593949317932,0.5184734463691711,0.520233690738678,0.5203278064727783,0.5209420919418335,0.5219385623931885,0.5222011208534241,0.5235049724578857,0.523995578289032,0.5243301391601562,0.5244215130805969,0.5253632068634033,0.5305367708206177,0.532177209854126,0.5323519706726074,0.5324908494949341,0.5326476693153381,0.5332571864128113,0.5364406108856201,0.5426343679428101,0.542946994304657,0.5432849526405334,0.5434372425079346,0.5443499088287354,0.5445529222488403,0.5464146137237549,0.5489853620529175,0.5497000813484192,0.550017774105072,0.5529474020004272,0.5550862550735474,0.5554726719856262,0.5554841160774231,0.5570889115333557,0.5572604537010193,0.5575369000434875,0.5603586435317993,0.5605491995811462,0.5629849433898926,0.5643165111541748,0.5647651553153992,0.5663542747497559,0.5668239593505859,0.5696604251861572,0.5715633630752563,0.5719088912010193,0.5720726251602173,0.5742185115814209,0.5742435455322266,0.5768352150917053,0.5782297253608704,0.5810376405715942,0.5822287797927856,0.582283079624176,0.5830004811286926,0.5868117213249207,0.5877195000648499,0.5889458656311035,0.589844822883606,0.5924261212348938,0.5953395366668701,0.5984076857566833,0.6028342247009277,0.6041223406791687,0.6111108064651489,0.6118029952049255,0.6126541495323181,0.6139521598815918,0.6178883910179138,0.6182713508605957,0.6182727813720703,0.6200067400932312,0.6200140714645386,0.6216925382614136,0.6223995685577393,0.623417854309082,0.623977541923523,0.6241119503974915,0.6245676279067993,0.6274019479751587,0.630865752696991,0.6365193128585815,0.6366696953773499,0.6406909823417664,0.6416944265365601,0.6419011950492859,0.6424008011817932,0.6433547735214233,0.6440331935882568,0.6452882885932922,0.6454277634620667,0.6469007134437561,0.6476929783821106,0.6481356024742126,0.648483157157898,0.6490445733070374,0.6493072509765625,0.6507827043533325,0.6514852046966553,0.6526040434837341,0.6528409123420715,0.6532555818557739,0.6533152461051941,0.6548355221748352,0.6566414833068848,0.6569228172302246,0.6597075462341309,0.6597933769226074,0.66053307056427,0.662818193435669,0.6645030379295349,0.6650025248527527,0.6667523980140686,0.670741617679596,0.6740658283233643,0.6754810214042664,0.6764476299285889,0.6771044135093689,0.677831768989563,0.6800099015235901,0.6800233721733093,0.684235692024231,0.6848477721214294,0.6878073811531067,0.6883782744407654,0.6897179484367371,0.6902015209197998,0.6906753778457642,0.6911615133285522,0.6943316459655762,0.6983527541160583,0.6990059018135071,0.7010010480880737,0.7014632821083069,0.7018042802810669,0.7020258903503418,0.7038843035697937,0.7039924263954163,0.7058133482933044,0.7110582590103149,0.7113063335418701,0.7113590240478516,0.7118397951126099,0.7139204740524292,0.7154325842857361,0.7163186073303223,0.7171698808670044,0.7177470922470093,0.7179340124130249,0.7190096378326416,0.7198450565338135,0.7202413082122803,0.7206712365150452,0.7209644317626953,0.72249835729599,0.7230923771858215,0.7239633202552795,0.7241261005401611,0.7250776290893555,0.7254620790481567,0.7273878455162048,0.7282242774963379,0.7289401888847351,0.7312023639678955,0.7333714962005615,0.733553409576416,0.7411848306655884,0.7449389696121216,0.7455021142959595,0.7462630867958069,0.7474546432495117,0.7506511211395264,0.7511365413665771,0.7511786222457886,0.7515571117401123,0.7529335021972656,0.7529391050338745,0.7529391050338745,0.7533080577850342,0.7541767358779907,0.7558790445327759,0.7559453845024109,0.7583986520767212,0.7604409456253052,0.7604676485061646,0.7608901262283325,0.7620447874069214,0.7624882459640503,0.7625576853752136,0.7632817029953003,0.7639009952545166,0.7645527124404907,0.7655971050262451,0.7661651372909546,0.766394853591919,0.7668089866638184,0.7689514756202698,0.7699697017669678,0.7708411812782288,0.772925853729248,0.7741801738739014,0.7746495008468628,0.7791800498962402,0.7797703742980957,0.7801823019981384,0.7806192636489868,0.7832438349723816,0.7845076322555542,0.7872123718261719,0.787987470626831,0.7884879112243652,0.7902721166610718,0.7918882369995117,0.79234778881073,0.7928459644317627,0.7933887243270874,0.7945318222045898,0.7948535084724426,0.7952454090118408,0.797844648361206,0.7993768453598022,0.8005138635635376,0.8014919757843018,0.8019165992736816,0.8023881912231445,0.8024529218673706,0.803341269493103,0.8066664934158325,0.8070749044418335,0.8076490163803101,0.8081787824630737,0.8108901977539062,0.8117119073867798,0.8139298558235168,0.8140742778778076,0.8165742754936218,0.8176214694976807,0.8179095983505249,0.8181548118591309,0.818877100944519,0.8211462497711182,0.82124924659729,0.8217859268188477,0.8227737545967102,0.8248634338378906,0.8259060382843018,0.8260535001754761,0.8270341157913208,0.8284432888031006,0.8297426104545593,0.8305791616439819,0.8311486840248108,0.832273542881012,0.833757758140564,0.8357501029968262,0.8363352417945862,0.8379297256469727,0.8380826115608215,0.838615894317627,0.8393241763114929,0.8401461839675903,0.8408654928207397,0.8423869609832764,0.8437674045562744,0.8462803363800049,0.8483651876449585,0.8486346006393433,0.8548471927642822,0.8554697036743164,0.8558909296989441,0.8564541339874268,0.8568710088729858,0.8620003461837769,0.8633871674537659,0.8644938468933105,0.8703421950340271,0.8711282014846802,0.8715969324111938,0.8728377819061279,0.873792827129364,0.8746874928474426,0.87885981798172,0.8790625333786011,0.87920743227005,0.881462812423706,0.881591796875,0.8830654621124268,0.8842131495475769,0.884576678276062,0.8851110935211182,0.8867844343185425,0.8877652287483215,0.8880334496498108,0.8892194628715515,0.8903692960739136,0.8909308910369873,0.8919689655303955,0.8925434350967407,0.8927512168884277,0.8942523002624512,0.8984723687171936,0.8989555835723877,0.8994954824447632,0.9008747935295105,0.9014211297035217,0.9041773080825806,0.9054539203643799,0.9068485498428345,0.9072251319885254,0.9073804020881653,0.9074313640594482,0.9089114665985107,0.9098615646362305,0.9103849530220032,0.9109780788421631,0.9146741032600403,0.9171189069747925,0.9191155433654785,0.9201734066009521,0.9212862849235535,0.9229089617729187,0.923182487487793,0.9237321615219116,0.9240671396255493,0.9245563745498657,0.9246213436126709,0.9250949621200562,0.9258836507797241,0.9286842346191406,0.9303098917007446,0.9306268692016602,0.9307419061660767,0.9313960671424866,0.9321702718734741,0.9322150945663452,0.9330428242683411,0.935742974281311,0.9372965693473816,0.9383747577667236,0.9393766522407532,0.9399559497833252,0.9403291940689087,0.9412922859191895,0.9417240619659424,0.9431906342506409,0.9436475038528442,0.944679856300354,0.9448498487472534,0.9483818411827087,0.9496554136276245,0.950259804725647,0.950557291507721,0.9506085515022278,0.9506270885467529,0.9521498680114746,0.9522398710250854,0.9526572227478027,0.9537173509597778,0.9545262455940247,0.9573879241943359,0.959012508392334,0.9595596790313721,0.9603484869003296,0.9604309797286987,0.9618088006973267,0.9632335901260376,0.9635190963745117,0.9642667174339294,0.9643266201019287,0.9645566940307617,0.9651563167572021,0.9656018614768982,0.9665971994400024,0.9667079448699951,0.9669584035873413,0.9671765565872192,0.9682159423828125,0.9697221517562866,0.9713364839553833,0.9716358184814453,0.9719429016113281,0.9731763601303101,0.9735773801803589,0.974094033241272,0.9753994941711426,0.9762117862701416,0.9768935441970825,0.9769271612167358,0.9789586663246155,0.978966236114502,0.9793431758880615,0.9803658723831177,0.9808410406112671,0.9813164472579956,0.9822033047676086,0.983484148979187,0.9835487604141235,0.9837163686752319,0.9852878451347351,0.9854940176010132,0.985609769821167,0.9856570959091187,0.9858170747756958,0.9859641790390015,0.9872147440910339,0.9874557256698608,0.9885318875312805,0.9885916113853455,0.9899885058403015,0.9908826351165771,0.9915524125099182,0.9917812943458557,0.9923660755157471,0.9929136633872986,0.9929718971252441,0.9932936429977417,0.9934707880020142,0.9936165809631348,0.9936304092407227,0.9941770434379578,0.9944541454315186,0.9945452213287354,0.9956368207931519,0.995667040348053,0.9958733320236206,0.9959583282470703,0.9962193965911865,0.9965120553970337,0.996886134147644,0.997692883014679,0.9977151155471802,0.9978039860725403,0.9978833198547363,0.9979290962219238,0.9982713460922241,0.9986168146133423,0.9988553524017334,0.9994779825210571,0.9994823932647705,0.9997178316116333,0.9997274875640869,0.9997422695159912,0.9997553825378418,0.9998306035995483,0.999903678894043,0.9999680519104004,0.9999760985374451,0.9999812841415405,0.9999821186065674,0.9999939203262329,0.9999971389770508],"y":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.002,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.003,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.004,0.005,0.005,0.005,0.005,0.006,0.006,0.006,0.006,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.007,0.008,0.008,0.008,0.008,0.008,0.008,0.008,0.008,0.008,0.008,0.008,0.008,0.008,0.008,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.009,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.011,0.011,0.011,0.011,0.011,0.012,0.012,0.012,0.012,0.012,0.013,0.013,0.013,0.013,0.013,0.013,0.013,0.013,0.013,0.013,0.013,0.014,0.014,0.014,0.014,0.014,0.014,0.014,0.014,0.014,0.014,0.014,0.014,0.014,0.014,0.015,0.015,0.015,0.015,0.015,0.015,0.016,0.016,0.016,0.017,0.017,0.018,0.018,0.018,0.018,0.018,0.018,0.018,0.018,0.019,0.019,0.019,0.02,0.02,0.02,0.02,0.021,0.021,0.021,0.021,0.021,0.021,0.022,0.022,0.022,0.023,0.023,0.024,0.025,0.025,0.025,0.025,0.025,0.025,0.025,0.025,0.026,0.027,0.027,0.027,0.028,0.029,0.029,0.03,0.03,0.03,0.03,0.031,0.031,0.031,0.032,0.032,0.032,0.032,0.032,0.032,0.032,0.032,0.033,0.033,0.033,0.033,0.033,0.033,0.033,0.034,0.034,0.034,0.034,0.035,0.035,0.035,0.036,0.036,0.036,0.036,0.036,0.036,0.036,0.036,0.037,0.037,0.038,0.039,0.039,0.04,0.041,0.041,0.041,0.041,0.041,0.041,0.041,0.041,0.042,0.043,0.043,0.043,0.044,0.045,0.045,0.046,0.047,0.047,0.047,0.047,0.048,0.049,0.05,0.05,0.051,0.052,0.053,0.053,0.054,0.054,0.054,0.054,0.054,0.054,0.054,0.054,0.055,0.056,0.056,0.056],"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"title":{"text":"Error vs Entropy\u003c\u002fbr\u003e\u003c\u002fbr\u003e\u003csub\u003en=1000\u003c\u002fsub\u003e"},"xaxis":{"title":{"text":"Entropy"}},"yaxis":{"title":{"text":"Error"}}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('d1cf50f5-d4bd-4095-a981-c88d173f4510');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
 </section>
-<section id="statistical-tests" class="level3" data-number="2.5.2">
-<h3 data-number="2.5.2" class="anchored" data-anchor-id="statistical-tests"><span class="header-section-number">2.5.2</span> Statistical Tests</h3>
-<p><strong>Statistical Tests</strong>: <em>List the statistical tests that will be used to test the hypotheses.</em></p>
 </section>
-</section>
-<section id="results" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="results"><span class="header-section-number">2.6</span> Results</h2>
+<section id="results" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="results"><span class="header-section-number">2.5</span> Results</h2>
 <p><strong>Expected Results</strong>: <em>Describe the expected outcomes or results of the experiment.</em></p>
 </section>
-<section id="discussion" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="discussion"><span class="header-section-number">2.7</span> Discussion</h2>
+<section id="discussion" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="discussion"><span class="header-section-number">2.6</span> Discussion</h2>
 <p><strong>Discussion Points</strong>: <em>Outline key points for discussion based on possible results. This may include interpretation of results, implications for theory and practice, limitations, and suggestions for future research.</em></p>
 </section>
-<section id="timeline" class="level2" data-number="2.8">
-<h2 data-number="2.8" class="anchored" data-anchor-id="timeline"><span class="header-section-number">2.8</span> Timeline</h2>
+<section id="timeline" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="timeline"><span class="header-section-number">2.7</span> Timeline</h2>
 <p><strong>Timeline</strong>: <em>This experiment was started on 25-07-2024</em></p>
 </section>
-<section id="references" class="level2" data-number="2.9">
-<h2 data-number="2.9" class="anchored" data-anchor-id="references"><span class="header-section-number">2.9</span> References</h2>
+<section id="references" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="references"><span class="header-section-number">2.8</span> References</h2>
 <p><strong>References</strong>: <em>List any references or sources cited in the protocol.</em></p>
 
 
