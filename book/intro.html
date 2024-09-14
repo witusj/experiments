@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Experiments - 1&nbsp; Introduction</title>
+<title>Experiments - Surrogate models for schedule evaluation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -89,6 +89,35 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -101,7 +130,7 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html">Surrogate models for schedule evaluation</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -132,38 +161,54 @@ div.csl-indent {
  <span class="menu-text">Preface</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./intro.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Surrogate models for schedule evaluation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./xgboost-pairwise-ranking.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">XGBoost classification model for pairwise ranking</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">XGBoost classification model for pairwise ranking</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./xgboost-objective-calc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">XGBoost regression model for objective calculation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">XGBoost regression model for objective calculation</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#objective" id="toc-objective" class="nav-link active" data-scroll-target="#objective">Objective</a>
+  <ul class="collapse">
+  <li><a href="#hypothesis" id="toc-hypothesis" class="nav-link" data-scroll-target="#hypothesis">Hypothesis:</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results:</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></h1>
+<h1 class="title">Surrogate models for schedule evaluation</h1>
 </div>
 
 
@@ -180,15 +225,77 @@ div.csl-indent {
 </header>
 
 
-<p>This is a book created from markdown and executable code.</p>
-<p>See <span class="citation" data-cites="knuth84">Knuth (<a href="#ref-knuth84" role="doc-biblioref">1984</a>)</span> for additional discussion of literate programming.</p>
+<section id="objective" class="level2">
+<h2 class="anchored" data-anchor-id="objective">Objective</h2>
+<p><strong>Objective:</strong> <em>Testing the performance of an XGBoost model trained for predicting objective values and ranking pairwise schedules.</em></p>
+<p><strong>Background:</strong> <em>To find optimal solutions for appointment scheduling problems one approach is to create local search neighborhoods and evaluate the schedules in that set. A better search method either (1) - creates smaller search neighborhoods or (2) - evaluates faster.</em></p>
+<p><em>One approach for speeding up evaluation is to create surrogate models, or metamodels. These are simplified representations of complex systems that are often created using machine learning techniques. When evaluating a complex system is computationally expensive, it’s more efficient to use a method that quickly identifies a subset of solutions with a high likelihood of containing the optimal or near-optimal solution. By focusing computational resources on refining the search within this promising subset, rather than across the entire solution space, we can significantly reduce the overall computational burden <span class="citation" data-cites="ho_ordinal_2000">(<a href="#ref-ho_ordinal_2000" role="doc-biblioref">Ho et al. 2000</a>)</span>.</em></p>
+<p><em>We will test two approaches:</em></p>
+<ol type="1">
+<li><em><strong>Cardinal model</strong> - Directly assessing the objective values from a given sample schedule using an XGBoost regressor.</em></li>
+<li><em><strong>Ordinal model</strong> - Predicting the preferred schedule from a pair of sampled schedules using an XGBoost classifier.</em></li>
+</ol>
+<section id="hypothesis" class="level3">
+<h3 class="anchored" data-anchor-id="hypothesis">Hypothesis:</h3>
+<ul>
+<li><strong>Ordinal performs better than Cardinal</strong> in comparing schedules measured by accuracy.</li>
+</ul>
+</section>
+<section id="results" class="level3">
+<h3 class="anchored" data-anchor-id="results">Results:</h3>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 25%">
+<col style="width: 53%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Model</strong></th>
+<th><strong>Cardinal (Regressor)</strong></th>
+<th><strong>Ordinal (Classifier)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Speedup Factor</strong> (regarding exact evaluation)</td>
+<td>~ 4x</td>
+<td>~ 165x</td>
+</tr>
+<tr class="even">
+<td><strong>Evaluation</strong> (approx.)</td>
+<td><span class="math inline">\(f: S \rightarrow Objective, \\ f(S) \in \mathbb{R}^{18}\)</span></td>
+<td><span class="math inline">\(g: (S_0,S_1) \rightarrow \text{\{0, if } S_0 \text{ is better; otherwise 1\}}, \\ g(S_0, S_1) \in \mathbb{R}^{2 \times 18}\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>Comparison</strong> (schedules <span class="math inline">\(S_0, S_1\)</span>)</td>
+<td><span class="math inline">\(f(S_0)\)</span> vs.&nbsp;<span class="math inline">\(f(S_1)\)</span></td>
+<td><span class="math inline">\(g(S_0, S_1)\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Parameter Tuning</strong></td>
+<td>CVGridSearch</td>
+<td>Optuna</td>
+</tr>
+<tr class="odd">
+<td><strong>Training Data</strong></td>
+<td>40k rows</td>
+<td>20k rows</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"></h3>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-knuth84" class="csl-entry" role="listitem">
-Knuth, Donald E. 1984. <span>“Literate Programming.”</span> <em>Comput. J.</em> 27 (2): 97–111. <a href="https://doi.org/10.1093/comjnl/27.2.97">https://doi.org/10.1093/comjnl/27.2.97</a>.
+<div id="ref-ho_ordinal_2000" class="csl-entry" role="listitem">
+Ho, Y-C, C G Cassandras, C-H Chen, and L Dai. 2000. <span>“Ordinal Optimisation and Simulation.”</span> <em>Journal of the Operational Research Society</em> 51 (4): 490–500. <a href="https://doi.org/10.1057/palgrave.jors.2600906">https://doi.org/10.1057/palgrave.jors.2600906</a>.
 </div>
 </div>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -608,7 +715,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./xgboost-pairwise-ranking.html" class="pagination-link" aria-label="XGBoost classification model for pairwise ranking">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">XGBoost classification model for pairwise ranking</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">XGBoost classification model for pairwise ranking</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
