@@ -196,9 +196,7 @@ window.Quarto = {
   <ul>
   <li><a href="#objective" id="toc-objective" class="nav-link active" data-scroll-target="#objective">Objective</a>
   <ul class="collapse">
-  <li><a href="#hypothesis" id="toc-hypothesis" class="nav-link" data-scroll-target="#hypothesis">Hypothesis:</a></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results:</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -235,19 +233,11 @@ window.Quarto = {
 <li><em><strong>Cardinal model</strong> - Directly assessing the objective values from a given sample schedule using an XGBoost regressor.</em></li>
 <li><em><strong>Ordinal model</strong> - Predicting the preferred schedule from a pair of sampled schedules using an XGBoost classifier.</em></li>
 </ol>
-<section id="hypothesis" class="level3">
-<h3 class="anchored" data-anchor-id="hypothesis">Hypothesis:</h3>
-<ul>
-<li><strong>Ordinal performs better than Cardinal</strong> in comparing schedules measured by accuracy.</li>
-</ul>
-</section>
-<section id="results" class="level3">
-<h3 class="anchored" data-anchor-id="results">Results:</h3>
 <table class="table">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 25%">
-<col style="width: 53%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -258,35 +248,29 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Speedup Factor</strong> (regarding exact evaluation)</td>
-<td>~ 4x</td>
-<td>~ 165x</td>
-</tr>
-<tr class="even">
 <td><strong>Evaluation</strong> (approx.)</td>
 <td><span class="math inline">\(f: S \rightarrow Objective, \\ f(S) \in \mathbb{R}^{18}\)</span></td>
 <td><span class="math inline">\(g: (S_0,S_1) \rightarrow \text{\{0, if } S_0 \text{ is better; otherwise 1\}}, \\ g(S_0, S_1) \in \mathbb{R}^{2 \times 18}\)</span></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Comparison</strong> (schedules <span class="math inline">\(S_0, S_1\)</span>)</td>
 <td><span class="math inline">\(f(S_0)\)</span> vs.&nbsp;<span class="math inline">\(f(S_1)\)</span></td>
 <td><span class="math inline">\(g(S_0, S_1)\)</span></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Parameter Tuning</strong></td>
-<td>CVGridSearch</td>
+<td>Optuna</td>
 <td>Optuna</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Training Data</strong></td>
 <td>40k rows</td>
 <td>20k rows</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="section" class="level3">
-<h3 class="anchored" data-anchor-id="section"></h3>
+<section id="results" class="level3">
+<h3 class="anchored" data-anchor-id="results">Results</h3>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
