@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Experiments - 3&nbsp; Local search with trained XGBoost regressor model</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./xgboost-objective-calc.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html">Surrogate models for schedule evaluation</a></li><li class="breadcrumb-item"><a href="./local-search-regressor.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Local search with trained XGBoost regressor model</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Experiments</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Surrogate models for schedule evaluation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./xgboost-pairwise-ranking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">XGBoost classification model for pairwise ranking</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./xgboost-objective-calc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">XGBoost regression model for objective calculation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./local-search-regressor.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Local search with trained XGBoost regressor model</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#objective" id="toc-objective" class="nav-link active" data-scroll-target="#objective"><span class="header-section-number">3.1</span> Objective</a></li>
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background"><span class="header-section-number">3.2</span> Background</a></li>
+  <li><a href="#hypothesis" id="toc-hypothesis" class="nav-link" data-scroll-target="#hypothesis"><span class="header-section-number">3.3</span> Hypothesis</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology"><span class="header-section-number">3.4</span> Methodology</a>
+  <ul class="collapse">
+  <li><a href="#tools-and-materials" id="toc-tools-and-materials" class="nav-link" data-scroll-target="#tools-and-materials"><span class="header-section-number">3.4.1</span> Tools and Materials</a></li>
+  <li><a href="#experimental-design" id="toc-experimental-design" class="nav-link" data-scroll-target="#experimental-design"><span class="header-section-number">3.4.2</span> Experimental Design</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables"><span class="header-section-number">3.4.3</span> Variables</a></li>
+  <li><a href="#data-collection" id="toc-data-collection" class="nav-link" data-scroll-target="#data-collection"><span class="header-section-number">3.4.4</span> Data Collection</a></li>
+  <li><a href="#sample-size-and-selection" id="toc-sample-size-and-selection" class="nav-link" data-scroll-target="#sample-size-and-selection"><span class="header-section-number">3.4.5</span> Sample Size and Selection</a></li>
+  <li><a href="#experimental-procedure" id="toc-experimental-procedure" class="nav-link" data-scroll-target="#experimental-procedure"><span class="header-section-number">3.4.6</span> Experimental Procedure</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3.5</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#load-best-solution-from-training-dataset" id="toc-load-best-solution-from-training-dataset" class="nav-link" data-scroll-target="#load-best-solution-from-training-dataset"><span class="header-section-number">3.5.1</span> Load best solution from training dataset</a></li>
+  <li><a href="#set-t-to-the-length-of-the-initial-schedule" id="toc-set-t-to-the-length-of-the-initial-schedule" class="nav-link" data-scroll-target="#set-t-to-the-length-of-the-initial-schedule"><span class="header-section-number">3.5.2</span> Set T to the length of the initial schedule</a></li>
+  <li><a href="#define-the-vectors-v" id="toc-define-the-vectors-v" class="nav-link" data-scroll-target="#define-the-vectors-v"><span class="header-section-number">3.5.3</span> Define the vectors <span class="math inline">\(V^*\)</span></a></li>
+  <li><a href="#define-the-vectors-u_t" id="toc-define-the-vectors-u_t" class="nav-link" data-scroll-target="#define-the-vectors-u_t"><span class="header-section-number">3.5.4</span> Define the vectors <span class="math inline">\(U_t\)</span></a></li>
+  <li><a href="#define-the-neighborhood-of-x" id="toc-define-the-neighborhood-of-x" class="nav-link" data-scroll-target="#define-the-neighborhood-of-x"><span class="header-section-number">3.5.5</span> Define the neighborhood of <span class="math inline">\(x\)</span></a></li>
+  <li><a href="#local-search-algorithm" id="toc-local-search-algorithm" class="nav-link" data-scroll-target="#local-search-algorithm"><span class="header-section-number">3.5.6</span> Local search algorithm</a></li>
+  <li><a href="#run-the-local-search-algorithm" id="toc-run-the-local-search-algorithm" class="nav-link" data-scroll-target="#run-the-local-search-algorithm"><span class="header-section-number">3.5.7</span> Run the local search algorithm</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">3.6</span> Discussion</a></li>
+  <li><a href="#timeline" id="toc-timeline" class="nav-link" data-scroll-target="#timeline"><span class="header-section-number">3.7</span> Timeline</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">3.8</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html">Surrogate models for schedule evaluation</a></li><li class="breadcrumb-item"><a href="./local-search-regressor.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Local search with trained XGBoost regressor model</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Local search with trained XGBoost regressor model</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="objective" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="objective"><span class="header-section-number">3.1</span> Objective</h2>
+<p>Test the working and performance of a <a href="./xgboost-pairwise-ranking.html">previously trained</a> XGBoost Regressor model in a local search application.</p>
+</section>
+<section id="background" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="background"><span class="header-section-number">3.2</span> Background</h2>
+<p>In previous experiments, we trained an XGBoost Regressor model to predict the objective values of neighboring schedules. In this experiment, we will use the trained models to perform a local search to find the best schedule.</p>
+</section>
+<section id="hypothesis" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="hypothesis"><span class="header-section-number">3.3</span> Hypothesis</h2>
+<p>The XGBoost Regressor model will be able to efficiently guide the local search algorithm to find a schedule with a lower objective value than the initial schedule.</p>
+</section>
+<section id="methodology" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="methodology"><span class="header-section-number">3.4</span> Methodology</h2>
+<section id="tools-and-materials" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="tools-and-materials"><span class="header-section-number">3.4.1</span> Tools and Materials</h3>
+<div id="55b0fc42" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> chain, combinations</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> comb  <span class="co"># Available in Python 3.8 and later</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functions <span class="im">import</span> calculate_objective</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="experimental-design" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="experimental-design"><span class="header-section-number">3.4.2</span> Experimental Design</h3>
+<p>We will use the trained XGBoost Regressor model to guide a local search algorithm to find the best schedule. The local search algorithm will start with an initial schedule and iteratively explore the neighborhood of the current schedule to find a better one. As an initial schedule, we will use the schedule with the lowest objective value from the training dataset that was used to train the XGBoost Regressor model.</p>
+</section>
+<section id="variables" class="level3" data-number="3.4.3">
+<h3 data-number="3.4.3" class="anchored" data-anchor-id="variables"><span class="header-section-number">3.4.3</span> Variables</h3>
+<ul>
+<li><strong>Independent Variables</strong>:
+<ul>
+<li>The trained XGBoost Regressor model.</li>
+</ul></li>
+<li><strong>Dependent Variables</strong>:
+<ul>
+<li>Speed, accuracy, and convergence of the local search algorithm.</li>
+</ul></li>
+</ul>
+</section>
+<section id="data-collection" class="level3" data-number="3.4.4">
+<h3 data-number="3.4.4" class="anchored" data-anchor-id="data-collection"><span class="header-section-number">3.4.4</span> Data Collection</h3>
+<p>We will use the training dataset to initialize the local search algorithm.</p>
+</section>
+<section id="sample-size-and-selection" class="level3" data-number="3.4.5">
+<h3 data-number="3.4.5" class="anchored" data-anchor-id="sample-size-and-selection"><span class="header-section-number">3.4.5</span> Sample Size and Selection</h3>
+<div id="9cd6e63f" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">12</span> <span class="co"># Number of patients</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="dv">18</span> <span class="co"># Number of intervals</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="dv">5</span> <span class="co"># Length of each interval</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.27</span>, <span class="fl">0.28</span>, <span class="fl">0.2</span>, <span class="fl">0.15</span>, <span class="fl">0.1</span>] <span class="co"># Service times distribution</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> <span class="fl">0.20</span> <span class="co"># Probability of a scheduled patient not showing up</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> <span class="fl">0.8</span> <span class="co"># Weight for the waiting time in objective function</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>num_schedules <span class="op">=</span> <span class="dv">20000</span> <span class="co"># Number of schedules to sample</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="experimental-procedure" class="level3" data-number="3.4.6">
+<h3 data-number="3.4.6" class="anchored" data-anchor-id="experimental-procedure"><span class="header-section-number">3.4.6</span> Experimental Procedure</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>The local search algorithm will follow the steps outlined below:</p>
+<ol type="1">
+<li><p>Start with the best solution found so far <span class="math inline">\(\{x^*, C(x^*)\}\)</span> from the training set.</p></li>
+<li><p>Set <span class="math inline">\(T\)</span> to the length of the vector <span class="math inline">\(x^*\)</span>.</p></li>
+<li><p>Define the vectors <span class="math inline">\(V^*\)</span> as follows:</p>
+<p><span class="math display">\[
+\left\{
+\begin{array}{c}
+\vec{v_1}, \\
+\vec{v_2}, \\
+\vec{v_3}, \\
+\vdots \\
+\vec{v_{T-1}}, \\
+\vec{v_T} \\
+\end{array}
+\right\} =
+\left\{
+\begin{array}{c}
+(-1, 0,...., 0, 1), \\
+(1, -1, 0,...., 0), \\
+(0, 1, -1,...., 0), \\
+\vdots \\
+(0,...., 1, -1, 0), \\
+(0,...., 0, 1, -1) \\
+\end{array}
+\right\}
+\]</span></p></li>
+<li><p>Define the vectors <span class="math inline">\(U_t\)</span> as all possible non-empty subsets of the set <span class="math inline">\(V^*\)</span> such that <span class="math inline">\(|U_t| = t\)</span>, <span class="math inline">\(t \in \{1,2, \dots,T\}\)</span>.</p></li>
+<li><p>Define the neighborhood of <span class="math inline">\(x\)</span> as all vectors of the form <span class="math inline">\(x + u_{t1}+\dots+u_{tk}\)</span> with <span class="math inline">\(u_{t1},\dots,u_{tk} \in U_t\)</span>.</p></li>
+<li><p>Set <span class="math inline">\(t = 1\)</span>.</p></li>
+<li><p>Generate the neighborhood of <span class="math inline">\(x^*\)</span>. For each vector <span class="math inline">\(y\)</span> in the neighborhood of <span class="math inline">\(x^*\)</span>:</p>
+<ol type="a">
+<li>Predict <span class="math inline">\(C(y)\)</span>.</li>
+<li>If <span class="math inline">\(C(y) &lt; C(x^*)\)</span>, set <span class="math inline">\(x^* = y\)</span> and go to 7.</li>
+</ol></li>
+<li><p>If <span class="math inline">\(t \leq T\)</span>, set <span class="math inline">\(t = t + 1\)</span> and go to 7.</p></li>
+<li><p>Return <span class="math inline">\(x^*\)</span>.</p></li>
+</ol>
+</div><div class="column" style="width:45%;">
+<div id="fig-local-search-algorithm" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-local-search-algorithm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/local_search_algorithm.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-local-search-algorithm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.1: Local search algorithm
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="results" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="results"><span class="header-section-number">3.5</span> Results</h2>
+<section id="load-best-solution-from-training-dataset" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="load-best-solution-from-training-dataset"><span class="header-section-number">3.5.1</span> Load best solution from training dataset</h3>
+<div id="df3778f9" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the best solution from the training dataset</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'neighbors_and_objectives.pkl'</span>, <span class="st">'rb'</span>) <span class="im">as</span> f:</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> pickle.load(f)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The data has following keys: </span><span class="sc">{</span>[key <span class="cf">for</span> key <span class="kw">in</span> data.keys()]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Flatten the objectives into a 1D array</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>flattened_data <span class="op">=</span> [value <span class="cf">for</span> sublist <span class="kw">in</span> data[<span class="st">'objectives'</span>] <span class="cf">for</span> value <span class="kw">in</span> sublist]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Find the index of the minimum value</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>min_index <span class="op">=</span> np.argmin(flattened_data)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Convert that index back to the original 2D structure</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>row_index <span class="op">=</span> min_index <span class="op">//</span> <span class="dv">2</span>  <span class="co"># Assuming each inner list has 2 values</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>col_index <span class="op">=</span> min_index <span class="op">%</span> <span class="dv">2</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The minimum objective value is at index [</span><span class="sc">{</span>row_index<span class="sc">}</span><span class="ss">][</span><span class="sc">{</span>col_index<span class="sc">}</span><span class="ss">].</span><span class="ch">\n</span><span class="ss">This is schedule: </span><span class="sc">{</span>data[<span class="st">'neighbors_list'</span>][row_index][col_index]<span class="sc">}</span><span class="ss"> with objective value </span><span class="sc">{</span>data[<span class="st">'objectives'</span>][row_index][col_index]<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the initial schedule to the best solution from the training dataset</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>initial_schedule <span class="op">=</span> data[<span class="st">'neighbors_list'</span>][row_index][col_index]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The data has following keys: ['neighbors_list', 'objectives', 'rankings']
+The minimum objective value is at index [11865][1].
+This is schedule: [2, 2, 2, 1, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0] with objective value 11.245488096565051.</code></pre>
+</div>
+</div>
+</section>
+<section id="set-t-to-the-length-of-the-initial-schedule" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="set-t-to-the-length-of-the-initial-schedule"><span class="header-section-number">3.5.2</span> Set T to the length of the initial schedule</h3>
+<div id="0697c7a8" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="bu">len</span>(initial_schedule)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="define-the-vectors-v" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="define-the-vectors-v"><span class="header-section-number">3.5.3</span> Define the vectors <span class="math inline">\(V^*\)</span></h3>
+<div id="5b9ba5e3" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_v_star(t):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create an initial vector 'u' of zeros with length 't'</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> np.zeros(t, dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the first element of vector 'u' to -1</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    u[<span class="dv">0</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the last element of vector 'u' to 1</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    u[<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the list 'v_star' with the initial vector 'u'</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    v_star <span class="op">=</span> [u]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop over the length of 'u' minus one times</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(u) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Append the last element of 'u' to the front of 'u'</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        u <span class="op">=</span> np.append(u[<span class="op">-</span><span class="dv">1</span>], u)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Remove the last element of 'u' to maintain the same length</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        u <span class="op">=</span> np.delete(u, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Append the updated vector 'u' to the list 'v_star'</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        v_star.append(u)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert the list of vectors 'v_star' into a NumPy array and return it</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(np.array(v_star))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Example of function call:</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># This will create a 4x4 matrix where each row is a cyclically shifted version of the first row</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>get_v_star(<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>array([[-1,  0,  0,  1],
+       [ 1, -1,  0,  0],
+       [ 0,  1, -1,  0],
+       [ 0,  0,  1, -1]])</code></pre>
+</div>
+</div>
+</section>
+<section id="define-the-vectors-u_t" class="level3" data-number="3.5.4">
+<h3 data-number="3.5.4" class="anchored" data-anchor-id="define-the-vectors-u_t"><span class="header-section-number">3.5.4</span> Define the vectors <span class="math inline">\(U_t\)</span></h3>
+<div id="305912ba" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> powerset(iterable, size<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"powerset([1,2,3], 2) --&gt; (1,2) (1,3) (2,3)"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [[i <span class="cf">for</span> i <span class="kw">in</span> item] <span class="cf">for</span> item <span class="kw">in</span> combinations(iterable, size)]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> initial_schedule</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate a matrix 'v_star' using the 'get_v_star' function</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>v_star <span class="op">=</span> get_v_star(T)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate all possible non-empty subsets (powerset) of the set {0, 1, 2, ..., t-1}</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 'ids' will be a list of tuples, where each tuple is a subset of indices</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>ids <span class="op">=</span> powerset(<span class="bu">range</span>(T), size)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(ids)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>ids[:T]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>[[0, 1],
+ [0, 2],
+ [0, 3],
+ [0, 4],
+ [0, 5],
+ [0, 6],
+ [0, 7],
+ [0, 8],
+ [0, 9],
+ [0, 10],
+ [0, 11],
+ [0, 12],
+ [0, 13],
+ [0, 14],
+ [0, 15],
+ [0, 16],
+ [0, 17],
+ [1, 2]]</code></pre>
+</div>
+</div>
+</section>
+<section id="define-the-neighborhood-of-x" class="level3" data-number="3.5.5">
+<h3 data-number="3.5.5" class="anchored" data-anchor-id="define-the-neighborhood-of-x"><span class="header-section-number">3.5.5</span> Define the neighborhood of <span class="math inline">\(x\)</span></h3>
+<div id="f51a13fb" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>v_star <span class="op">=</span> get_v_star(T)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_neighborhood(x, v_star, ids, verbose<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.array(x)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> verbose:</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Printing every </span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">th result"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the list 'neighborhood' to store the vectors in the neighborhood of 'x'</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    neighborhood <span class="op">=</span> []</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop over all possible non-empty subsets of indices</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(ids)):</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize the vector 'neighbor' to store the sum of vectors in 'v_star' corresponding to the indices in 'ids[i]'</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        neighbor <span class="op">=</span> np.zeros(<span class="bu">len</span>(x), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Loop over all indices in 'ids[i]'</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(ids[i])):</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose:</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"v_star</span><span class="sc">{</span>[ids[i][j]]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>v_star[ids[i][j]]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Add the vector in 'v_star' corresponding to the index 'ids[i][j]' to 'neighbor'</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>            neighbor <span class="op">+=</span> v_star[ids[i][j]]</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Append the vector 'x' plus 'neighbor' to the list 'neighborhood'</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        x_n <span class="op">=</span> x <span class="op">+</span> neighbor</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i<span class="op">%</span>p<span class="op">==</span><span class="dv">0</span>:</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose:</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"x, x', delta:</span><span class="ch">\n</span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">,</span><span class="ch">\n</span><span class="sc">{</span>x_n<span class="sc">}</span><span class="ss">,</span><span class="ch">\n</span><span class="sc">{</span>neighbor<span class="sc">}</span><span class="ch">\n</span><span class="ss">----------------- "</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        neighborhood.append(x_n)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert the list 'neighborhood' into a NumPy array</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    neighborhood <span class="op">=</span> np.array(neighborhood)</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> verbose:</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Size of raw neighborhood: </span><span class="sc">{</span><span class="bu">len</span>(neighborhood)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a mask for rows with negative values</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> <span class="op">~</span>np.<span class="bu">any</span>(neighborhood <span class="op">&lt;</span> <span class="dv">0</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Filter out rows with negative values using the mask</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> verbose:</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"filtered out: </span><span class="sc">{</span><span class="bu">len</span>(neighborhood)<span class="op">-</span>mask<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> schedules with negative values."</span>)</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    filtered_neighborhood <span class="op">=</span> neighborhood[mask]</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> verbose:</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Size of filtered neighborhood: </span><span class="sc">{</span><span class="bu">len</span>(filtered_neighborhood)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> filtered_neighborhood</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Example of function call:</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="co"># This will generate the neighborhood of the vector 'x' using the vectors in 'v_star' and the indices in 'ids'</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>test_nh <span class="op">=</span> get_neighborhood(x, v_star, ids)</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"All neighborhoods with </span><span class="sc">{</span>size<span class="sc">}</span><span class="ss"> patients switched:</span><span class="ch">\n</span><span class="ss"> x = </span><span class="sc">{</span>np<span class="sc">.</span>array(x)<span class="sc">}</span><span class="ss">: </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>test_nh<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>All neighborhoods with 2 patients switched:
+ x = [2 2 2 1 2 0 2 0 0 0 0 0 0 0 0 0 1 0]: 
+ [[2 1 2 1 2 0 2 0 0 0 0 0 0 0 0 0 1 1]
+ [1 3 1 1 2 0 2 0 0 0 0 0 0 0 0 0 1 1]
+ [1 2 3 0 2 0 2 0 0 0 0 0 0 0 0 0 1 1]
+ [1 2 2 2 1 0 2 0 0 0 0 0 0 0 0 0 1 1]
+ [1 2 2 1 2 1 1 0 0 0 0 0 0 0 0 0 1 1]
+ [1 2 2 1 2 0 2 0 0 0 0 0 0 0 0 1 0 1]
+ [1 2 2 1 2 0 2 0 0 0 0 0 0 0 0 0 2 0]
+ [3 2 1 1 2 0 2 0 0 0 0 0 0 0 0 0 1 0]
+ [3 1 3 0 2 0 2 0 0 0 0 0 0 0 0 0 1 0]
+ [3 1 2 2 1 0 2 0 0 0 0 0 0 0 0 0 1 0]
+ [3 1 2 1 2 1 1 0 0 0 0 0 0 0 0 0 1 0]
+ [3 1 2 1 2 0 2 0 0 0 0 0 0 0 0 1 0 0]
+ [2 3 2 0 2 0 2 0 0 0 0 0 0 0 0 0 1 0]
+ [2 3 1 2 1 0 2 0 0 0 0 0 0 0 0 0 1 0]
+ [2 3 1 1 2 1 1 0 0 0 0 0 0 0 0 0 1 0]
+ [2 3 1 1 2 0 2 0 0 0 0 0 0 0 0 1 0 0]
+ [2 2 3 1 1 0 2 0 0 0 0 0 0 0 0 0 1 0]
+ [2 2 3 0 2 1 1 0 0 0 0 0 0 0 0 0 1 0]
+ [2 2 3 0 2 0 2 0 0 0 0 0 0 0 0 1 0 0]
+ [2 2 2 2 1 1 1 0 0 0 0 0 0 0 0 0 1 0]
+ [2 2 2 2 1 0 2 0 0 0 0 0 0 0 0 1 0 0]
+ [2 2 2 1 3 0 1 0 0 0 0 0 0 0 0 0 1 0]
+ [2 2 2 1 2 1 1 0 0 0 0 0 0 0 0 1 0 0]
+ [2 2 2 1 2 0 2 0 0 0 0 0 0 0 1 0 0 0]]</code></pre>
+</div>
+</div>
+</section>
+<section id="local-search-algorithm" class="level3" data-number="3.5.6">
+<h3 data-number="3.5.6" class="anchored" data-anchor-id="local-search-algorithm"><span class="header-section-number">3.5.6</span> Local search algorithm</h3>
+<div id="8198ad94" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predictor(x, regressor):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    x_dmatrix <span class="op">=</span> xgb.DMatrix(x.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> regressor.predict(x_dmatrix)[<span class="dv">0</span>]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> local_search(x, v_star, function, size<span class="op">=</span><span class="dv">2</span>):</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the best solution found so far 'x_star' to the input vector 'x'</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    x_star <span class="op">=</span> np.array(x).flatten()  <span class="co"># Keep as 1D array</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the best cost found so far 'C_star' to the cost of the input vector 'x'</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    x_star_dmatrix <span class="op">=</span> xgb.DMatrix(x_star.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    C_star <span class="op">=</span> regressor.predict(x_star_dmatrix)[<span class="dv">0</span>]</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the value of 'T' to the length of the input vector 'x'</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> <span class="bu">len</span>(x_star)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop over all possible values of 't'</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, size):</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Running local search </span><span class="sc">{</span>t<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Generate the neighborhood of the current best solution 'x_star'</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        ids <span class="op">=</span> powerset(<span class="bu">range</span>(T), t)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        neighborhood <span class="op">=</span> get_neighborhood(x_star, v_star, ids)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> neighbor <span class="kw">in</span> neighborhood:</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>            neighbor_dmatrix <span class="op">=</span> xgb.DMatrix(neighbor.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>            cost <span class="op">=</span> regressor.predict(neighbor_dmatrix)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> cost <span class="op">&lt;</span> C_star:</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                x_star <span class="op">=</span> neighbor</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>                C_star <span class="op">=</span> cost</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                result <span class="op">=</span> [<span class="bu">int</span>(x) <span class="cf">for</span> x <span class="kw">in</span> neighbor]</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>                objectives <span class="op">=</span> calculate_objective(result, s, d, q)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>                objective_values <span class="op">=</span> w <span class="op">*</span> objectives[<span class="dv">0</span>] <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> objectives[<span class="dv">1</span>]</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"Found better solution: </span><span class="sc">{</span>x_star<span class="sc">}</span><span class="ss">, pred_cost: </span><span class="sc">{</span>C_star<span class="sc">}</span><span class="ss">, real_cost: </span><span class="sc">{</span>objective_values<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Return the best solution found 'x_star' as 1D array</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x_star, C_star</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="run-the-local-search-algorithm" class="level3" data-number="3.5.7">
+<h3 data-number="3.5.7" class="anchored" data-anchor-id="run-the-local-search-algorithm"><span class="header-section-number">3.5.7</span> Run the local search algorithm</h3>
+<div id="914c9b97" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example of using the local search algorithm with a random vector 'x' and a regressor model</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load regressor model</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>regressor <span class="op">=</span> xgb.Booster()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>regressor.load_model(<span class="st">"models/regressor.json"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> local_search(x, v_star, regressor, T)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Best solution found: </span><span class="sc">{</span>test[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">, with cost: </span><span class="sc">{</span>test[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running local search 1
+Found better solution: [1 2 2 1 2 0 2 0 0 0 0 0 0 0 0 0 1 1], pred_cost: [10.281207], real_cost: 8.162154121600702
+Running local search 2
+Found better solution: [1 1 2 1 2 0 2 0 0 0 0 0 0 0 0 0 1 2], pred_cost: [8.305949], real_cost: 7.118514237440006
+Found better solution: [2 1 2 1 2 1 1 0 0 0 0 0 0 0 0 0 1 1], pred_cost: [7.7005653], real_cost: 6.523056382105286
+Running local search 3
+Found better solution: [2 1 1 1 2 1 1 0 0 0 0 0 0 0 0 0 1 2], pred_cost: [6.2141895], real_cost: 5.9050890429514
+Found better solution: [2 0 2 2 1 1 1 0 0 0 0 0 0 0 0 0 1 2], pred_cost: [5.688616], real_cost: 8.135716569605737
+Found better solution: [2 0 2 1 2 1 1 0 0 0 0 0 0 0 0 1 0 2], pred_cost: [5.634845], real_cost: 7.630515071320066
+Running local search 4
+Found better solution: [2 0 1 2 1 1 1 0 0 0 0 0 0 0 0 1 0 3], pred_cost: [4.6322837], real_cost: 8.908754841600006
+Found better solution: [2 0 1 1 2 1 1 0 0 0 0 0 0 0 0 1 1 2], pred_cost: [4.4252434], real_cost: 5.4223641600000025
+Found better solution: [1 1 1 2 1 1 1 0 0 0 0 0 0 0 0 1 1 2], pred_cost: [3.823077], real_cost: 3.8149331968000033
+Found better solution: [1 1 1 1 2 1 1 0 0 0 0 0 0 0 1 0 1 2], pred_cost: [3.4292548], real_cost: 3.8031641600000032
+Running local search 5
+Found better solution: [1 1 0 2 1 1 1 0 0 0 0 0 0 0 1 0 2 2], pred_cost: [3.203102], real_cost: 6.272326238208006
+Found better solution: [1 1 0 1 2 1 1 0 0 0 0 0 0 0 1 1 1 2], pred_cost: [3.0490165], real_cost: 3.8031641600000032
+Found better solution: [1 0 1 2 1 2 0 0 0 0 0 0 0 0 1 1 0 3], pred_cost: [2.2049222], real_cost: 8.970549964800009
+Found better solution: [1 0 1 2 1 1 1 0 0 0 0 0 0 0 1 1 1 2], pred_cost: [1.3268744], real_cost: 3.8149331968000033
+Found better solution: [1 1 1 2 1 1 1 0 0 0 0 1 0 0 0 0 2 1], pred_cost: [1.1347629], real_cost: 4.128044236800004
+Running local search 6
+Found better solution: [1 1 0 2 1 1 1 0 0 0 0 1 0 0 1 0 2 1], pred_cost: [0.5271375], real_cost: 4.128044236800004
+Found better solution: [1 0 1 2 1 2 0 0 0 0 0 1 0 0 1 0 2 1], pred_cost: [-0.24009036], real_cost: 5.809039360000006
+Running local search 7
+Found better solution: [1 0 1 2 1 2 0 1 0 0 0 1 0 0 0 0 2 1], pred_cost: [-0.41874433], real_cost: 5.810732318720006
+Running local search 8
+Found better solution: [1 0 1 2 1 2 1 1 0 0 0 0 0 1 0 0 1 1], pred_cost: [-0.60428673], real_cost: 4.293875071320067
+Found better solution: [1 0 1 2 1 2 1 0 0 1 0 1 0 0 0 0 1 1], pred_cost: [-0.6419732], real_cost: 4.208571484733443
+Found better solution: [1 0 1 2 1 2 0 1 1 0 0 1 0 0 0 0 1 1], pred_cost: [-0.9211931], real_cost: 3.780406719938563
+Running local search 9
+Found better solution: [1 0 1 2 1 1 0 1 1 0 0 1 0 0 1 0 1 1], pred_cost: [-1.0453645], real_cost: 2.085724160000001
+Found better solution: [1 0 1 2 1 2 1 1 0 1 0 1 0 0 0 0 0 1], pred_cost: [-1.267929], real_cost: 4.293903377629188
+Running local search 10
+Found better solution: [1 0 1 2 1 1 1 1 1 0 0 1 0 0 1 0 0 1], pred_cost: [-1.9270139], real_cost: 2.099411596738561
+Running local search 11
+Found better solution: [1 0 1 2 0 1 1 1 1 1 0 1 0 0 0 0 1 1], pred_cost: [-2.3282366], real_cost: 1.6192000000000009
+Running local search 12
+Running local search 13
+Found better solution: [1 0 1 2 0 1 1 1 1 0 0 1 0 0 1 0 1 1], pred_cost: [-2.4249165], real_cost: 1.6192000000000009
+Running local search 14
+Running local search 15
+Running local search 16
+Running local search 17
+Best solution found: [1 0 1 2 0 1 1 1 1 0 0 1 0 0 1 0 1 1], with cost: [-2.4249165]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="discussion" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="discussion"><span class="header-section-number">3.6</span> Discussion</h2>
+<p>Analyze your results in this section. Discuss whether your hypothesis was supported, what the results mean, and the implications for future work. Address any anomalies or unexpected findings, and consider the broader impact of your results.</p>
+</section>
+<section id="timeline" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="timeline"><span class="header-section-number">3.7</span> Timeline</h2>
+<p>Document the duration and key dates of the experiment. This helps in project management and reproducibility.</p>
+</section>
+<section id="references" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="references"><span class="header-section-number">3.8</span> References</h2>
+<p>Cite all sources that informed your experiment, including research papers, datasets, and tools. This section ensures that your work is properly grounded in existing research and that others can trace the origins of your methods and data.s</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./xgboost-objective-calc.html" class="pagination-link" aria-label="XGBoost regression model for objective calculation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">XGBoost regression model for objective calculation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
