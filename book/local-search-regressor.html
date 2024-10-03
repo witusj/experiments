@@ -279,7 +279,7 @@ window.Quarto = {
 <h2 data-number="3.4" class="anchored" data-anchor-id="methodology"><span class="header-section-number">3.4</span> Methodology</h2>
 <section id="tools-and-materials" class="level3" data-number="3.4.1">
 <h3 data-number="3.4.1" class="anchored" data-anchor-id="tools-and-materials"><span class="header-section-number">3.4.1</span> Tools and Materials</h3>
-<div id="55b0fc42" class="cell" data-execution_count="1">
+<div id="7897d668" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> chain, combinations</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
@@ -312,7 +312,7 @@ window.Quarto = {
 </section>
 <section id="sample-size-and-selection" class="level3" data-number="3.4.5">
 <h3 data-number="3.4.5" class="anchored" data-anchor-id="sample-size-and-selection"><span class="header-section-number">3.4.5</span> Sample Size and Selection</h3>
-<div id="9cd6e63f" class="cell" data-execution_count="2">
+<div id="042374e0" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">12</span> <span class="co"># Number of patients</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="dv">18</span> <span class="co"># Number of intervals</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="dv">5</span> <span class="co"># Length of each interval</span></span>
@@ -383,7 +383,7 @@ Figure&nbsp;3.1: Local search algorithm
 <h2 data-number="3.5" class="anchored" data-anchor-id="results"><span class="header-section-number">3.5</span> Results</h2>
 <section id="load-best-solution-from-training-dataset" class="level3" data-number="3.5.1">
 <h3 data-number="3.5.1" class="anchored" data-anchor-id="load-best-solution-from-training-dataset"><span class="header-section-number">3.5.1</span> Load best solution from training dataset</h3>
-<div id="df3778f9" class="cell" data-execution_count="3">
+<div id="66956ac1" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the best solution from the training dataset</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'neighbors_and_objectives.pkl'</span>, <span class="st">'rb'</span>) <span class="im">as</span> f:</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> pickle.load(f)</span>
@@ -403,23 +403,25 @@ Figure&nbsp;3.1: Local search algorithm
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The minimum objective value is at index [</span><span class="sc">{</span>row_index<span class="sc">}</span><span class="ss">][</span><span class="sc">{</span>col_index<span class="sc">}</span><span class="ss">].</span><span class="ch">\n</span><span class="ss">This is schedule: </span><span class="sc">{</span>data[<span class="st">'neighbors_list'</span>][row_index][col_index]<span class="sc">}</span><span class="ss"> with objective value </span><span class="sc">{</span>data[<span class="st">'objectives'</span>][row_index][col_index]<span class="sc">}</span><span class="ss">."</span>)</span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the initial schedule to the best solution from the training dataset</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>initial_schedule <span class="op">=</span> data[<span class="st">'neighbors_list'</span>][row_index][col_index]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>initial_schedule <span class="op">=</span> data[<span class="st">'neighbors_list'</span>][row_index][col_index]</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="bu">sum</span>(initial_schedule)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="bu">len</span>(initial_schedule)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>The data has following keys: ['neighbors_list', 'objectives', 'rankings']
-The minimum objective value is at index [11865][1].
-This is schedule: [2, 2, 2, 1, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0] with objective value 11.245488096565051.</code></pre>
+The minimum objective value is at index [11407][1].
+This is schedule: [3, 1, 2, 2, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0] with objective value 12.313507053448905.</code></pre>
 </div>
 </div>
 </section>
 <section id="set-t-to-the-length-of-the-initial-schedule" class="level3" data-number="3.5.2">
 <h3 data-number="3.5.2" class="anchored" data-anchor-id="set-t-to-the-length-of-the-initial-schedule"><span class="header-section-number">3.5.2</span> Set T to the length of the initial schedule</h3>
-<div id="0697c7a8" class="cell" data-execution_count="4">
+<div id="f9957a01" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="bu">len</span>(initial_schedule)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="define-the-vectors-v" class="level3" data-number="3.5.3">
 <h3 data-number="3.5.3" class="anchored" data-anchor-id="define-the-vectors-v"><span class="header-section-number">3.5.3</span> Define the vectors <span class="math inline">\(V^*\)</span></h3>
-<div id="5b9ba5e3" class="cell" data-execution_count="5">
+<div id="d2d8e8e7" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_v_star(t):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create an initial vector 'u' of zeros with length 't'</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> np.zeros(t, dtype<span class="op">=</span><span class="bu">int</span>)</span>
@@ -453,7 +455,7 @@ This is schedule: [2, 2, 2, 1, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0] with ob
 </section>
 <section id="define-the-vectors-u_t" class="level3" data-number="3.5.4">
 <h3 data-number="3.5.4" class="anchored" data-anchor-id="define-the-vectors-u_t"><span class="header-section-number">3.5.4</span> Define the vectors <span class="math inline">\(U_t\)</span></h3>
-<div id="305912ba" class="cell" data-execution_count="6">
+<div id="2559b1dd" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> powerset(iterable, size<span class="op">=</span><span class="dv">1</span>):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"powerset([1,2,3], 2) --&gt; (1,2) (1,3) (2,3)"</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [[i <span class="cf">for</span> i <span class="kw">in</span> item] <span class="cf">for</span> item <span class="kw">in</span> combinations(iterable, size)]</span>
@@ -493,7 +495,7 @@ This is schedule: [2, 2, 2, 1, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0] with ob
 </section>
 <section id="define-the-neighborhood-of-x" class="level3" data-number="3.5.5">
 <h3 data-number="3.5.5" class="anchored" data-anchor-id="define-the-neighborhood-of-x"><span class="header-section-number">3.5.5</span> Define the neighborhood of <span class="math inline">\(x\)</span></h3>
-<div id="f51a13fb" class="cell" data-execution_count="7">
+<div id="96b45fed" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>v_star <span class="op">=</span> get_v_star(T)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_neighborhood(x, v_star, ids, verbose<span class="op">=</span><span class="va">False</span>):</span>
@@ -540,130 +542,232 @@ This is schedule: [2, 2, 2, 1, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0] with ob
 <span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"All neighborhoods with </span><span class="sc">{</span>size<span class="sc">}</span><span class="ss"> patients switched:</span><span class="ch">\n</span><span class="ss"> x = </span><span class="sc">{</span>np<span class="sc">.</span>array(x)<span class="sc">}</span><span class="ss">: </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>test_nh<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>All neighborhoods with 2 patients switched:
- x = [2 2 2 1 2 0 2 0 0 0 0 0 0 0 0 0 1 0]: 
- [[2 1 2 1 2 0 2 0 0 0 0 0 0 0 0 0 1 1]
- [1 3 1 1 2 0 2 0 0 0 0 0 0 0 0 0 1 1]
- [1 2 3 0 2 0 2 0 0 0 0 0 0 0 0 0 1 1]
- [1 2 2 2 1 0 2 0 0 0 0 0 0 0 0 0 1 1]
- [1 2 2 1 2 1 1 0 0 0 0 0 0 0 0 0 1 1]
- [1 2 2 1 2 0 2 0 0 0 0 0 0 0 0 1 0 1]
- [1 2 2 1 2 0 2 0 0 0 0 0 0 0 0 0 2 0]
- [3 2 1 1 2 0 2 0 0 0 0 0 0 0 0 0 1 0]
- [3 1 3 0 2 0 2 0 0 0 0 0 0 0 0 0 1 0]
- [3 1 2 2 1 0 2 0 0 0 0 0 0 0 0 0 1 0]
- [3 1 2 1 2 1 1 0 0 0 0 0 0 0 0 0 1 0]
- [3 1 2 1 2 0 2 0 0 0 0 0 0 0 0 1 0 0]
- [2 3 2 0 2 0 2 0 0 0 0 0 0 0 0 0 1 0]
- [2 3 1 2 1 0 2 0 0 0 0 0 0 0 0 0 1 0]
- [2 3 1 1 2 1 1 0 0 0 0 0 0 0 0 0 1 0]
- [2 3 1 1 2 0 2 0 0 0 0 0 0 0 0 1 0 0]
- [2 2 3 1 1 0 2 0 0 0 0 0 0 0 0 0 1 0]
- [2 2 3 0 2 1 1 0 0 0 0 0 0 0 0 0 1 0]
- [2 2 3 0 2 0 2 0 0 0 0 0 0 0 0 1 0 0]
- [2 2 2 2 1 1 1 0 0 0 0 0 0 0 0 0 1 0]
- [2 2 2 2 1 0 2 0 0 0 0 0 0 0 0 1 0 0]
- [2 2 2 1 3 0 1 0 0 0 0 0 0 0 0 0 1 0]
- [2 2 2 1 2 1 1 0 0 0 0 0 0 0 0 1 0 0]
- [2 2 2 1 2 0 2 0 0 0 0 0 0 0 1 0 0 0]]</code></pre>
+ x = [3 1 2 2 1 0 0 1 0 1 0 0 0 0 0 0 1 0]: 
+ [[3 0 2 2 1 0 0 1 0 1 0 0 0 0 0 0 1 1]
+ [2 2 1 2 1 0 0 1 0 1 0 0 0 0 0 0 1 1]
+ [2 1 3 1 1 0 0 1 0 1 0 0 0 0 0 0 1 1]
+ [2 1 2 3 0 0 0 1 0 1 0 0 0 0 0 0 1 1]
+ [2 1 2 2 1 0 1 0 0 1 0 0 0 0 0 0 1 1]
+ [2 1 2 2 1 0 0 1 1 0 0 0 0 0 0 0 1 1]
+ [2 1 2 2 1 0 0 1 0 1 0 0 0 0 0 1 0 1]
+ [2 1 2 2 1 0 0 1 0 1 0 0 0 0 0 0 2 0]
+ [4 1 1 2 1 0 0 1 0 1 0 0 0 0 0 0 1 0]
+ [4 0 3 1 1 0 0 1 0 1 0 0 0 0 0 0 1 0]
+ [4 0 2 3 0 0 0 1 0 1 0 0 0 0 0 0 1 0]
+ [4 0 2 2 1 0 1 0 0 1 0 0 0 0 0 0 1 0]
+ [4 0 2 2 1 0 0 1 1 0 0 0 0 0 0 0 1 0]
+ [4 0 2 2 1 0 0 1 0 1 0 0 0 0 0 1 0 0]
+ [3 2 2 1 1 0 0 1 0 1 0 0 0 0 0 0 1 0]
+ [3 2 1 3 0 0 0 1 0 1 0 0 0 0 0 0 1 0]
+ [3 2 1 2 1 0 1 0 0 1 0 0 0 0 0 0 1 0]
+ [3 2 1 2 1 0 0 1 1 0 0 0 0 0 0 0 1 0]
+ [3 2 1 2 1 0 0 1 0 1 0 0 0 0 0 1 0 0]
+ [3 1 3 2 0 0 0 1 0 1 0 0 0 0 0 0 1 0]
+ [3 1 3 1 1 0 1 0 0 1 0 0 0 0 0 0 1 0]
+ [3 1 3 1 1 0 0 1 1 0 0 0 0 0 0 0 1 0]
+ [3 1 3 1 1 0 0 1 0 1 0 0 0 0 0 1 0 0]
+ [3 1 2 3 0 0 1 0 0 1 0 0 0 0 0 0 1 0]
+ [3 1 2 3 0 0 0 1 1 0 0 0 0 0 0 0 1 0]
+ [3 1 2 3 0 0 0 1 0 1 0 0 0 0 0 1 0 0]
+ [3 1 2 2 1 1 0 0 0 1 0 0 0 0 0 0 1 0]
+ [3 1 2 2 1 0 1 0 1 0 0 0 0 0 0 0 1 0]
+ [3 1 2 2 1 0 1 0 0 1 0 0 0 0 0 1 0 0]
+ [3 1 2 2 1 0 0 2 0 0 0 0 0 0 0 0 1 0]
+ [3 1 2 2 1 0 0 1 1 0 0 0 0 0 0 1 0 0]
+ [3 1 2 2 1 0 0 1 0 1 0 0 0 0 1 0 0 0]]</code></pre>
 </div>
 </div>
 </section>
 <section id="local-search-algorithm" class="level3" data-number="3.5.6">
 <h3 data-number="3.5.6" class="anchored" data-anchor-id="local-search-algorithm"><span class="header-section-number">3.5.6</span> Local search algorithm</h3>
-<div id="8198ad94" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predictor(x, regressor):</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    x_dmatrix <span class="op">=</span> xgb.DMatrix(x.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> regressor.predict(x_dmatrix)[<span class="dv">0</span>]</span>
+<div id="6a914968" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> local_search_predicted(x, v_star, regressor, size<span class="op">=</span><span class="dv">2</span>):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the best solution found so far 'x_star' to the input vector 'x'</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    x_star <span class="op">=</span> np.array(x).flatten()  <span class="co"># Keep as 1D array</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> local_search(x, v_star, function, size<span class="op">=</span><span class="dv">2</span>):</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the best solution found so far 'x_star' to the input vector 'x'</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    x_star <span class="op">=</span> np.array(x).flatten()  <span class="co"># Keep as 1D array</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the best cost found so far 'C_star' to the cost of the input vector 'x'</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    x_star_dmatrix <span class="op">=</span> xgb.DMatrix(x_star.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    c_star <span class="op">=</span> regressor.predict(x_star_dmatrix)[<span class="dv">0</span>]</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the best cost found so far 'C_star' to the cost of the input vector 'x'</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    x_star_dmatrix <span class="op">=</span> xgb.DMatrix(x_star.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    C_star <span class="op">=</span> regressor.predict(x_star_dmatrix)[<span class="dv">0</span>]</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the value of 'T' to the length of the input vector 'x'</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> <span class="bu">len</span>(x_star)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the value of 'T' to the length of the input vector 'x'</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> <span class="bu">len</span>(x_star)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop over all possible values of 't'</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, size):</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Running local search </span><span class="sc">{</span>t<span class="sc">}</span><span class="ss">'</span>)</span>
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop over all possible values of 't'</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, size):</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Running local search </span><span class="sc">{</span>t<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Generate the neighborhood of the current best solution 'x_star'</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        ids <span class="op">=</span> powerset(<span class="bu">range</span>(T), t)</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        neighborhood <span class="op">=</span> get_neighborhood(x_star, v_star, ids)</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> neighbor <span class="kw">in</span> neighborhood:</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>            neighbor_dmatrix <span class="op">=</span> xgb.DMatrix(neighbor.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>            cost <span class="op">=</span> regressor.predict(neighbor_dmatrix)</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> cost <span class="op">&lt;</span> C_star:</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                x_star <span class="op">=</span> neighbor</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>                C_star <span class="op">=</span> cost</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                result <span class="op">=</span> [<span class="bu">int</span>(x) <span class="cf">for</span> x <span class="kw">in</span> neighbor]</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>                objectives <span class="op">=</span> calculate_objective(result, s, d, q)</span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>                objective_values <span class="op">=</span> w <span class="op">*</span> objectives[<span class="dv">0</span>] <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> objectives[<span class="dv">1</span>]</span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"Found better solution: </span><span class="sc">{</span>x_star<span class="sc">}</span><span class="ss">, pred_cost: </span><span class="sc">{</span>C_star<span class="sc">}</span><span class="ss">, real_cost: </span><span class="sc">{</span>objective_values<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Return the best solution found 'x_star' as 1D array</span></span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x_star, C_star</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Generate the neighborhood of the current best solution 'x_star' with 't' patients switched</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        ids <span class="op">=</span> powerset(<span class="bu">range</span>(T), t)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        neighborhood <span class="op">=</span> get_neighborhood(x_star, v_star, ids)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Switching </span><span class="sc">{</span>t<span class="sc">}</span><span class="ss"> patient(s). Size of neighborhood: </span><span class="sc">{</span><span class="bu">len</span>(ids)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> neighbor <span class="kw">in</span> neighborhood:</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>            neighbor_dmatrix <span class="op">=</span> xgb.DMatrix(neighbor.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>            cost <span class="op">=</span> regressor.predict(neighbor_dmatrix)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> cost <span class="op">&lt;</span> c_star:</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>                x_star <span class="op">=</span> neighbor</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>                c_star <span class="op">=</span> cost</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>                result <span class="op">=</span> [<span class="bu">int</span>(x) <span class="cf">for</span> x <span class="kw">in</span> x_star] <span class="co"># Convert x_star to list of integers</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                objectives <span class="op">=</span> calculate_objective(result, s, d, q)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>                objective_value <span class="op">=</span> w <span class="op">*</span> objectives[<span class="dv">0</span>] <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> objectives[<span class="dv">1</span>]</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"Found better solution: </span><span class="sc">{</span>x_star<span class="sc">}</span><span class="ss">, pred_cost: </span><span class="sc">{</span>c_star<span class="sc">}</span><span class="ss">, real_cost: </span><span class="sc">{</span>objective_value<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Return the best solution found 'x_star' as 1D array</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x_star, c_star, objective_value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="e26b2915" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> local_search(x, v_star, size<span class="op">=</span><span class="dv">2</span>):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the best solution found so far 'x_star' to the input vector 'x'</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    x_star <span class="op">=</span> np.array(x).flatten()  <span class="co"># Keep as 1D array</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate initial objectives and cost</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    objectives_star <span class="op">=</span> calculate_objective(x_star, s, d, q)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    c_star <span class="op">=</span> w <span class="op">*</span> objectives_star[<span class="dv">0</span>] <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> objectives_star[<span class="dv">1</span>]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the value of 'T' to the length of the input vector 'x'</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> <span class="bu">len</span>(x_star)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop over all possible values of 't'</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, size):</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Running local search </span><span class="sc">{</span>t<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Generate the neighborhood of the current best solution 'x_star' with 't' patients switched</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        ids <span class="op">=</span> powerset(<span class="bu">range</span>(T), t)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        neighborhood <span class="op">=</span> get_neighborhood(x_star, v_star, ids)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Switching </span><span class="sc">{</span>t<span class="sc">}</span><span class="ss"> patient(s). Size of neighborhood: </span><span class="sc">{</span><span class="bu">len</span>(ids)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> neighbor <span class="kw">in</span> neighborhood:</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Calculate objectives for the neighbor</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>            objectives <span class="op">=</span> calculate_objective(neighbor, s, d, q)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>            cost <span class="op">=</span> w <span class="op">*</span> objectives[<span class="dv">0</span>] <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> w) <span class="op">*</span> objectives[<span class="dv">1</span>]</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Compare scalar costs</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> cost <span class="op">&lt;</span> c_star:</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>                x_star <span class="op">=</span> neighbor</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                c_star <span class="op">=</span> cost</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"Found better solution: </span><span class="sc">{</span>x_star<span class="sc">}</span><span class="ss">, cost: </span><span class="sc">{</span>c_star<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Return the best solution found 'x_star' and its cost</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x_star, c_star</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="run-the-local-search-algorithm" class="level3" data-number="3.5.7">
 <h3 data-number="3.5.7" class="anchored" data-anchor-id="run-the-local-search-algorithm"><span class="header-section-number">3.5.7</span> Run the local search algorithm</h3>
-<div id="914c9b97" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example of using the local search algorithm with a random vector 'x' and a regressor model</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load regressor model</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>regressor <span class="op">=</span> xgb.Booster()</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>regressor.load_model(<span class="st">"models/regressor.json"</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> local_search(x, v_star, regressor, T)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Best solution found: </span><span class="sc">{</span>test[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">, with cost: </span><span class="sc">{</span>test[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="b1059ec8" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example of using the local search algorithm with a random vector 'x' and a regressor model</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load regressor model</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>regressor <span class="op">=</span> xgb.Booster()</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>regressor.load_model(<span class="st">"models/regressor.json"</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> local_search_predicted(initial_schedule, v_star, regressor, T)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(test)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Best solution found: </span><span class="sc">{</span>test[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">, with predicted cost: </span><span class="sc">{</span>test[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> and real cost: </span><span class="sc">{</span>test[<span class="dv">2</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running local search 1
-Found better solution: [1 2 2 1 2 0 2 0 0 0 0 0 0 0 0 0 1 1], pred_cost: [10.281207], real_cost: 8.162154121600702
+Switching 1 patient(s). Size of neighborhood: 18
+Found better solution: [2 1 2 2 1 0 0 1 0 1 0 0 0 0 0 0 1 1], pred_cost: [6.866628], real_cost: 6.883515058933364
 Running local search 2
-Found better solution: [1 1 2 1 2 0 2 0 0 0 0 0 0 0 0 0 1 2], pred_cost: [8.305949], real_cost: 7.118514237440006
-Found better solution: [2 1 2 1 2 1 1 0 0 0 0 0 0 0 0 0 1 1], pred_cost: [7.7005653], real_cost: 6.523056382105286
+Switching 2 patient(s). Size of neighborhood: 153
+Found better solution: [2 0 2 2 1 0 0 1 0 1 0 0 0 0 0 0 1 2], pred_cost: [6.0458527], real_cost: 7.963012165632001
+Found better solution: [1 1 2 2 1 0 0 1 0 1 0 0 0 0 0 0 2 1], pred_cost: [5.4767694], real_cost: 6.656923205632005
 Running local search 3
-Found better solution: [2 1 1 1 2 1 1 0 0 0 0 0 0 0 0 0 1 2], pred_cost: [6.2141895], real_cost: 5.9050890429514
-Found better solution: [2 0 2 2 1 1 1 0 0 0 0 0 0 0 0 0 1 2], pred_cost: [5.688616], real_cost: 8.135716569605737
-Found better solution: [2 0 2 1 2 1 1 0 0 0 0 0 0 0 0 1 0 2], pred_cost: [5.634845], real_cost: 7.630515071320066
+Switching 3 patient(s). Size of neighborhood: 816
+Found better solution: [1 1 1 2 1 0 0 1 0 1 0 0 0 0 0 0 2 2], pred_cost: [4.789194], real_cost: 6.186993041408005
+Found better solution: [0 1 2 2 1 1 0 0 0 1 0 0 0 0 0 0 2 2], pred_cost: [4.5829315], real_cost: 8.944398467727368
+Found better solution: [0 1 2 2 1 0 0 1 1 0 0 0 0 0 0 1 1 2], pred_cost: [3.8392844], real_cost: 6.343812165632004
 Running local search 4
-Found better solution: [2 0 1 2 1 1 1 0 0 0 0 0 0 0 0 1 0 3], pred_cost: [4.6322837], real_cost: 8.908754841600006
-Found better solution: [2 0 1 1 2 1 1 0 0 0 0 0 0 0 0 1 1 2], pred_cost: [4.4252434], real_cost: 5.4223641600000025
-Found better solution: [1 1 1 2 1 1 1 0 0 0 0 0 0 0 0 1 1 2], pred_cost: [3.823077], real_cost: 3.8149331968000033
-Found better solution: [1 1 1 1 2 1 1 0 0 0 0 0 0 0 1 0 1 2], pred_cost: [3.4292548], real_cost: 3.8031641600000032
+Switching 4 patient(s). Size of neighborhood: 3060
+Found better solution: [0 1 1 2 1 0 0 1 1 0 0 0 0 0 0 1 2 2], pred_cost: [3.3210394], real_cost: 6.186993041408005
+Found better solution: [0 1 2 2 1 0 1 1 0 0 0 0 0 0 1 0 2 1], pred_cost: [3.3092134], real_cost: 6.658841605570565
 Running local search 5
-Found better solution: [1 1 0 2 1 1 1 0 0 0 0 0 0 0 1 0 2 2], pred_cost: [3.203102], real_cost: 6.272326238208006
-Found better solution: [1 1 0 1 2 1 1 0 0 0 0 0 0 0 1 1 1 2], pred_cost: [3.0490165], real_cost: 3.8031641600000032
-Found better solution: [1 0 1 2 1 2 0 0 0 0 0 0 0 0 1 1 0 3], pred_cost: [2.2049222], real_cost: 8.970549964800009
-Found better solution: [1 0 1 2 1 1 1 0 0 0 0 0 0 0 1 1 1 2], pred_cost: [1.3268744], real_cost: 3.8149331968000033
-Found better solution: [1 1 1 2 1 1 1 0 0 0 0 1 0 0 0 0 2 1], pred_cost: [1.1347629], real_cost: 4.128044236800004
+Switching 5 patient(s). Size of neighborhood: 8568
+Found better solution: [0 1 1 2 1 0 2 0 0 0 0 0 0 1 0 0 2 2], pred_cost: [3.104191], real_cost: 7.806193041408007
+Found better solution: [0 1 1 2 1 0 1 1 0 0 0 0 0 0 1 1 2 1], pred_cost: [2.8356414], real_cost: 4.042711040000003
+Found better solution: [1 0 2 2 1 0 2 0 0 0 0 1 0 0 0 0 2 1], pred_cost: [2.3569963], real_cost: 8.279509123072007
 Running local search 6
-Found better solution: [1 1 0 2 1 1 1 0 0 0 0 1 0 0 1 0 2 1], pred_cost: [0.5271375], real_cost: 4.128044236800004
-Found better solution: [1 0 1 2 1 2 0 0 0 0 0 1 0 0 1 0 2 1], pred_cost: [-0.24009036], real_cost: 5.809039360000006
+Switching 6 patient(s). Size of neighborhood: 18564
+Found better solution: [1 0 1 2 1 0 2 0 0 0 0 1 0 1 0 0 1 2], pred_cost: [2.302895], real_cost: 5.348800000000004
+Found better solution: [1 0 1 2 1 0 2 0 0 0 0 1 0 0 1 0 2 1], pred_cost: [1.7315665], real_cost: 5.661911040000006
+Found better solution: [0 1 1 2 1 0 2 0 0 0 0 1 0 1 0 0 2 1], pred_cost: [1.2410283], real_cost: 5.661911040000006
 Running local search 7
-Found better solution: [1 0 1 2 1 2 0 1 0 0 0 1 0 0 0 0 2 1], pred_cost: [-0.41874433], real_cost: 5.810732318720006
+Switching 7 patient(s). Size of neighborhood: 31824
+Found better solution: [0 1 1 2 1 1 1 1 0 0 0 1 0 0 0 0 2 1], pred_cost: [1.1901934], real_cost: 4.129737195520003
 Running local search 8
-Found better solution: [1 0 1 2 1 2 1 1 0 0 0 0 0 1 0 0 1 1], pred_cost: [-0.60428673], real_cost: 4.293875071320067
-Found better solution: [1 0 1 2 1 2 1 0 0 1 0 1 0 0 0 0 1 1], pred_cost: [-0.6419732], real_cost: 4.208571484733443
-Found better solution: [1 0 1 2 1 2 0 1 1 0 0 1 0 0 0 0 1 1], pred_cost: [-0.9211931], real_cost: 3.780406719938563
+Switching 8 patient(s). Size of neighborhood: 43758
+Found better solution: [0 1 1 1 1 1 1 1 0 0 1 0 0 0 1 0 2 1], pred_cost: [0.96885973], real_cost: 2.030551040000001
+Found better solution: [1 1 1 1 1 1 1 1 0 1 0 0 0 0 1 0 2 0], pred_cost: [0.87961173], real_cost: 1.6192000000000009
+Found better solution: [0 1 1 2 1 1 2 1 0 0 0 0 0 0 1 0 2 0], pred_cost: [0.7119973], real_cost: 5.746358980286878
+Found better solution: [0 1 1 2 1 1 1 1 0 1 0 1 0 0 0 0 2 0], pred_cost: [0.39935952], real_cost: 3.718386155520003
 Running local search 9
-Found better solution: [1 0 1 2 1 1 0 1 1 0 0 1 0 0 1 0 1 1], pred_cost: [-1.0453645], real_cost: 2.085724160000001
-Found better solution: [1 0 1 2 1 2 1 1 0 1 0 1 0 0 0 0 0 1], pred_cost: [-1.267929], real_cost: 4.293903377629188
+Switching 9 patient(s). Size of neighborhood: 48620
+Found better solution: [0 1 1 2 0 1 1 1 0 1 0 1 0 1 0 0 2 0], pred_cost: [-0.09283682], real_cost: 3.238400000000003
+Found better solution: [0 1 1 1 1 1 2 0 1 0 0 1 0 0 1 0 2 0], pred_cost: [-0.37259385], real_cost: 3.238400000000003
 Running local search 10
-Found better solution: [1 0 1 2 1 1 1 1 1 0 0 1 0 0 1 0 0 1], pred_cost: [-1.9270139], real_cost: 2.099411596738561
+Switching 10 patient(s). Size of neighborhood: 43758
 Running local search 11
-Found better solution: [1 0 1 2 0 1 1 1 1 1 0 1 0 0 0 0 1 1], pred_cost: [-2.3282366], real_cost: 1.6192000000000009
+Switching 11 patient(s). Size of neighborhood: 31824
 Running local search 12
+Switching 12 patient(s). Size of neighborhood: 18564
 Running local search 13
-Found better solution: [1 0 1 2 0 1 1 1 1 0 0 1 0 0 1 0 1 1], pred_cost: [-2.4249165], real_cost: 1.6192000000000009
+Switching 13 patient(s). Size of neighborhood: 8568
 Running local search 14
+Switching 14 patient(s). Size of neighborhood: 3060
 Running local search 15
+Switching 15 patient(s). Size of neighborhood: 816
 Running local search 16
+Switching 16 patient(s). Size of neighborhood: 153
 Running local search 17
-Best solution found: [1 0 1 2 0 1 1 1 1 0 0 1 0 0 1 0 1 1], with cost: [-2.4249165]</code></pre>
+Switching 17 patient(s). Size of neighborhood: 18
+(array([0, 1, 1, 1, 1, 1, 2, 0, 1, 0, 0, 1, 0, 0, 1, 0, 2, 0]), array([-0.37259385], dtype=float32), 3.238400000000003)
+Best solution found: [0 1 1 1 1 1 2 0 1 0 0 1 0 0 1 0 2 0], with predicted cost: [-0.37259385] and real cost: 3.238400000000003</code></pre>
+</div>
+</div>
+<div id="501e6c07" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Computing optimun solution with real cost</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Initial schedule: </span><span class="sc">{</span>test[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> local_search(test[<span class="dv">0</span>], v_star, T)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(test)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Best solution found: </span><span class="sc">{</span>test[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">, with cost: </span><span class="sc">{</span>test[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial schedule: [0 1 1 1 1 1 2 0 1 0 0 1 0 0 1 0 2 0]
+Running local search 1
+Switching 1 patient(s). Size of neighborhood: 18
+Found better solution: [0 1 1 1 1 1 2 0 1 0 0 1 0 0 1 1 1 0], cost: 1.6192000000000009
+Running local search 2
+Switching 2 patient(s). Size of neighborhood: 153
+Running local search 3
+Switching 3 patient(s). Size of neighborhood: 816
+Running local search 4
+Switching 4 patient(s). Size of neighborhood: 3060
+Running local search 5
+Switching 5 patient(s). Size of neighborhood: 8568
+Running local search 6
+Switching 6 patient(s). Size of neighborhood: 18564
+Found better solution: [1 1 1 1 1 1 1 0 1 0 0 1 0 0 1 1 1 0], cost: 0.0
+Running local search 7
+Switching 7 patient(s). Size of neighborhood: 31824
+Running local search 8
+Switching 8 patient(s). Size of neighborhood: 43758
+Running local search 9
+Switching 9 patient(s). Size of neighborhood: 48620
+Running local search 10
+Switching 10 patient(s). Size of neighborhood: 43758
+Running local search 11
+Switching 11 patient(s). Size of neighborhood: 31824
+Running local search 12
+Switching 12 patient(s). Size of neighborhood: 18564
+Running local search 13
+Switching 13 patient(s). Size of neighborhood: 8568
+Running local search 14
+Switching 14 patient(s). Size of neighborhood: 3060
+Running local search 15
+Switching 15 patient(s). Size of neighborhood: 816
+Running local search 16
+Switching 16 patient(s). Size of neighborhood: 153
+Running local search 17
+Switching 17 patient(s). Size of neighborhood: 18
+(array([1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0]), 0.0)
+Best solution found: [1 1 1 1 1 1 1 0 1 0 0 1 0 0 1 1 1 0], with cost: 0.0</code></pre>
 </div>
 </div>
 </section>
